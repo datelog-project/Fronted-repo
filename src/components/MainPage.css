@@ -1,0 +1,40 @@
+.main-container {
+  padding: 40px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fdfdfd;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+}
+
+.main-content {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.placeholder-box {
+  margin-top: 30px;
+  padding: 30px;
+  background-color: #f2f2f2;
+  border-radius: 12px;
+  color: #555;
+}

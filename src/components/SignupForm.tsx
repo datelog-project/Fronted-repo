@@ -17,7 +17,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegisterSuccess }) => {
     }
 
     console.log('회원가입 시도:', { email, password });
-    onRegisterSuccess(); // 성공 처리
+    onRegisterSuccess();
   };
 
   return (
