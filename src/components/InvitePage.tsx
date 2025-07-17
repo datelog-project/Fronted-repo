@@ -5,40 +5,37 @@ import MainPage from './MainPage';
 import api from '../api/api';
 
 type UserInfoResponse = {
-  id: String;
-  userConnectionId: String | null;
+  id: string;
+  userConnectionId: string | null;
   userConnectionStatus: 'CONNECTED' | 'PENDING' | 'ENDED' | 'REJECT' | null;
   userId: string;
   partnerId: string | null;
   partnerName: string | null;
   partnerEmail: string | null;
+  isSender: boolean;
 };
 
 interface InvitePageProps {
   userInfo: UserInfoResponse | null;
-  accessToken: string | null;
+  setUserInfo: React.Dispatch<React.SetStateAction<UserInfoResponse | null>>;
 }
 
 
-const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
+const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo}) => {
   const [inviteEmail, setInviteEmail] = useState('');
-  const [isSender, setIsSender] = useState(false)
 
   if (userInfo?.userConnectionStatus === 'CONNECTED') {
     return <MainPage />;
   }
 
-  if (userInfo?.userConnectionStatus === 'PENDING') {
-    
-  }
 
-  const isSendered = userInfo?.userId === userInfo?.id;
+  const isSender = userInfo?.isSender;
+  console.log(userInfo);
   const isPending = userInfo?.userConnectionStatus === 'PENDING';
   const showInviteForm =
     userInfo?.userConnectionStatus === null ||
     userInfo?.userConnectionStatus === 'REJECT' ||
     userInfo?.userConnectionStatus === 'ENDED';
-
 
   const handleInvite = async () => {
     if (!inviteEmail) {
@@ -51,9 +48,11 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
 
       alert(`${inviteEmail}님에게 초대장을 전송했습니다!`);
       setInviteEmail('');
-      setIsSender(true);
-    } catch (error: any) {
-      alert(error.response?.data?.error || '초대 실패!');
+      const res = await api.get('/auth/me');
+      setUserInfo(res.data);
+    } catch (error) {
+      console.error(error);
+      alert('서버 오류 발생');
     }
   };
 
@@ -61,11 +60,14 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
     if (!userInfo?.userConnectionId) return;
 
     try {
-      await api.post(`/connections/${userInfo.userConnectionId}/accept`);
+      await api.post(`connections/${userInfo.userConnectionId}/accept`);
+
       alert('초대를 수락했습니다!');
-      window.location.reload();
-    } catch (error: any) {
-      alert(error.response?.data?.error || '수락 실패');
+      const res = await api.get('/auth/me');
+      setUserInfo(res.data);
+    } catch (err) {
+      console.error(err);
+      alert('서버 오류 발생');
     }
   };
 
@@ -73,11 +75,13 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
     if (!userInfo?.userConnectionId) return;
 
     try {
-      await api.post(`/connections/${userInfo.userConnectionId}/reject`);
+      await api.post(`/connections/${userInfo.userConnectionId}/reject`)
+
       alert('초대를 거절했습니다');
       window.location.reload();
-    } catch (error: any) {
-      alert(error.response?.data?.error || '거절 실패');
+    } catch (err) {
+      console.error(err);
+      alert('서버 오류 발생');
     }
   };
 
@@ -89,7 +93,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
       <div className="right-page">
         <div className="invite-form-wrapper">
           {isPending ? (
-            isSendered ? (
+            isSender ? (
               <div style={{ textAlign: 'center', marginTop: '100px' }}>
                 <h2 style={{fontSize: '24px'}}>⏳ 상대방의 수락을 기다리고 있어요!</h2>
                 <p style={{ fontSize: '14px', color: '#888' }}>

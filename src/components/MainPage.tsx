@@ -7,7 +7,7 @@ interface MainPageProps {
   onLogout?: () => void;
 }
 
-const MainPage: React.FC<MainPageProps> = ({ userName = '사용자', partnerName = '연인', onLogout }) => {
+const MainPage: React.FC<MainPageProps> = ({ userName , partnerName , onLogout }) => {
   return (
     <div className="main-container">
       <header className="main-header">
