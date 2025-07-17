@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import logo from '../assets/withlog_logo.png';
 import './AuthPage.css'; 
 import MainPage from './MainPage';
+import api from '../api/api';
 
 type UserInfoResponse = {
   id: String;
@@ -46,27 +47,13 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
     }
 
     try {
-      const res = await fetch('http://localhost:8080/connections/invite', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ partnerEmail: inviteEmail }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(errorData.error || '초대 실패!');
-        return;
-      }
+      await api.post('/connections/invite', { partnerEmail: inviteEmail });
 
       alert(`${inviteEmail}님에게 초대장을 전송했습니다!`);
       setInviteEmail('');
       setIsSender(true);
-    } catch (error) {
-      console.error(error);
-      alert('서버 오류 발생');
+    } catch (error: any) {
+      alert(error.response?.data?.error || '초대 실패!');
     }
   };
 
@@ -74,24 +61,11 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
     if (!userInfo?.userConnectionId) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/connections/${userInfo.userConnectionId}/accept`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        alert(error.error || '수락 실패');
-        return;
-      }
-
+      await api.post(`/connections/${userInfo.userConnectionId}/accept`);
       alert('초대를 수락했습니다!');
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert('서버 오류 발생');
+    } catch (error: any) {
+      alert(error.response?.data?.error || '수락 실패');
     }
   };
 
@@ -99,24 +73,11 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo, accessToken }) => {
     if (!userInfo?.userConnectionId) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/connections/${userInfo.userConnectionId}/reject`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        alert(error.error || '거절 실패');
-        return;
-      }
-
+      await api.post(`/connections/${userInfo.userConnectionId}/reject`);
       alert('초대를 거절했습니다');
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert('서버 오류 발생');
+    } catch (error: any) {
+      alert(error.response?.data?.error || '거절 실패');
     }
   };
 
