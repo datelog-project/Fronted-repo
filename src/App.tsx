@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import InvitePage from './components/InvitePage';
 import AuthPage from './components/AuthPage';
 
@@ -16,6 +16,8 @@ function App() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<UserInfoResponse | null>(null);
   const [isSignin, setIsSignin] = useState(false);
+
+
 
   const handleSignin = async (email: string, password: string) => {
     try {
