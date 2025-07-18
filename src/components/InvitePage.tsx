@@ -3,34 +3,26 @@ import logo from '../assets/withlog_logo.png';
 import './AuthPage.css'; 
 import MainPage from './MainPage';
 import api from '../api/api';
-
-type UserInfoResponse = {
-  id: string;
-  userConnectionId: string | null;
-  userConnectionStatus: 'CONNECTED' | 'PENDING' | 'ENDED' | 'REJECT' | null;
-  userId: string;
-  partnerId: string | null;
-  partnerName: string | null;
-  partnerEmail: string | null;
-  isSender: boolean;
-};
+import { useNavigate } from 'react-router-dom';
+import type { UserInfoResponse } from '../App';
 
 interface InvitePageProps {
   userInfo: UserInfoResponse | null;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfoResponse | null>>;
+  handleLogout: () => void;
 }
 
 
-const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo}) => {
+const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo, handleLogout}) => {
   const [inviteEmail, setInviteEmail] = useState('');
+  const navigate = useNavigate();
 
   if (userInfo?.userConnectionStatus === 'CONNECTED') {
-    return <MainPage />;
+    return <MainPage userInfo={userInfo} setUserInfo={setUserInfo} handleLogout={handleLogout}/>;
   }
 
 
   const isSender = userInfo?.isSender;
-  console.log(userInfo);
   const isPending = userInfo?.userConnectionStatus === 'PENDING';
   const showInviteForm =
     userInfo?.userConnectionStatus === null ||
@@ -50,24 +42,27 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo}) => {
       setInviteEmail('');
       const res = await api.get('/auth/me');
       setUserInfo(res.data);
-    } catch (error) {
-      console.error(error);
-      alert('서버 오류 발생');
+    } catch (error:any) {
+      const errMsg =
+      error.response?.data?.error ||
+      error.message ||
+      '알 수 없는 서버 오류';
+      alert(errMsg);
     }
   };
 
   const handleAccept = async () => {
     if (!userInfo?.userConnectionId) return;
-
     try {
-      await api.post(`connections/${userInfo.userConnectionId}/accept`);
+      await api.post(`/connections/${userInfo.userConnectionId}/accept`, {
+      });
 
-      alert('초대를 수락했습니다!');
       const res = await api.get('/auth/me');
       setUserInfo(res.data);
-    } catch (err) {
-      console.error(err);
-      alert('서버 오류 발생');
+
+      navigate('/main');
+    } catch (error) {
+      alert('초대 수락 실패');
     }
   };
 
@@ -85,12 +80,19 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo}) => {
     }
   };
 
+  
+
   return (
     <div className="book-container">
       <div className="left-page">
         <img src={logo} alt="WithLog 로고" className="logo-img" />
       </div>
       <div className="right-page">
+        <div className="logout-wrapper">
+          <button className="logout-btn" onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
         <div className="invite-form-wrapper">
           {isPending ? (
             isSender ? (

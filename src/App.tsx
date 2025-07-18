@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import InvitePage from './components/InvitePage';
-import AuthPage from './components/AuthPage';
+import { BrowserRouter as Router } from 'react-router-dom';
 import api from './api/api';
+import AppRoutes from './AppRoutes';
 
-type UserInfoResponse = {
+export type UserInfoResponse = {
   id: string;
   userConnectionId: string | null;
   userConnectionStatus: 'CONNECTED' | 'PENDING' | 'ENDED' | 'REJECT' | null;
-  userId: string;
+  userName: string;
   partnerId: string | null;
   partnerName: string | null;
   partnerEmail: string | null;
@@ -23,7 +23,8 @@ function App() {
     try {
       const res = await api.post('/auth/signin', { email, password });
       const { accessToken } = res.data;
-      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem('accessToken', accessToken);
+
       const meRes = await api.get('/auth/me', {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -31,15 +32,15 @@ function App() {
       setUserInfo(meRes.data);
       setIsSignin(true);
     } catch (error: any) {
-      console.error(error);
       alert('로그인 실패: ' + (error.response?.data?.error || '서버 오류'));
     }
   };
 
-
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
     if (!token) {
+      setUserInfo(null);
+      setIsSignin(false);
       setIsLoading(false);
       return;
     }
@@ -50,8 +51,8 @@ function App() {
         setUserInfo(res.data);
         setIsSignin(true);
       } catch (err) {
-        console.error('자동 로그인 실패:', err);
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem('accessToken');
+        setUserInfo(null);
         setIsSignin(false);
       } finally {
         setIsLoading(false);
@@ -60,12 +61,20 @@ function App() {
   }, []);
 
   if (isLoading) return <div>로딩중...</div>;
-  if (!isSignin) return <AuthPage onSignin={handleSignin} />;
+
   return (
-    <>
-      <InvitePage userInfo={userInfo} setUserInfo={setUserInfo} />
-    </>
+    <Router>
+      <AppRoutes
+        userInfo={userInfo}
+        isSignin={isSignin}
+        isLoading={isLoading}
+        setUserInfo={setUserInfo}
+        setIsSignin={setIsSignin}
+        onSignin={handleSignin}
+      />
+    </Router>
   );
 }
 
 export default App;
+

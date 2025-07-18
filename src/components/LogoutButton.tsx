@@ -13,9 +13,12 @@ const LogoutButton: React.FC<LogoutButtonProps> = () => {
       await api.post('/auth/signout');
       localStorage.removeItem('accessToken');
       navigate('/auth');
-    } catch (error) {
-      alert('로그아웃에 실패했습니다.');
-      console.error(error);
+    } catch (error:any) {
+      const errMsg =
+      error.response?.data?.error ||
+      error.message ||
+      '알 수 없는 서버 오류';
+      alert(errMsg);
     }
   };
 

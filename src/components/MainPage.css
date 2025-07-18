@@ -13,7 +13,7 @@
 }
 
 .logout-btn {
-  background-color: #f44336;
+  background-color: rgb(175, 102, 252);
   color: white;
   border: none;
   border-radius: 6px;
@@ -23,7 +23,7 @@
 }
 
 .logout-btn:hover {
-  background-color: #d32f2f;
+  background-color: rgb(165, 82, 253);
 }
 
 .main-content {

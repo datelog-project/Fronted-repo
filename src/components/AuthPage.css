@@ -232,3 +232,13 @@ form button:hover {
   font-size: 14px;
   color: #444;
 }
+
+.logout-wrapper {
+  position: absolute;
+  top: 20px;    /* 위쪽에서 20px 띄움 */
+  right: 20px;  /* 오른쪽에서 20px 띄움 */
+}
+
+.right-page {
+  position: relative; /* 자식의 absolute 기준 */
+}
