@@ -235,8 +235,16 @@ form button:hover {
 
 .logout-wrapper {
   position: absolute;
-  top: 20px;    /* 위쪽에서 20px 띄움 */
-  right: 20px;  /* 오른쪽에서 20px 띄움 */
+  top: 20px;
+  right: 20px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .right-page {

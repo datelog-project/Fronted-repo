@@ -3,10 +3,13 @@ import { useRoutes, Navigate, useNavigate } from 'react-router-dom';
 import AuthPage from './components/AuthPage';
 import InvitePage from './components/InvitePage';
 import MainPage from './components/MainPage';
+import CreatePostPage from './components/CreatePostPage';
+
 
 import type { UserInfoResponse } from './App';
+import api from './api/api';
 
-type Props = {
+interface Props {
   userInfo: UserInfoResponse | null;
   isSignin: boolean;
   isLoading: boolean;
@@ -20,15 +23,21 @@ export default function AppRoutes({ userInfo, isSignin, isLoading, setUserInfo, 
     return <div>로딩중...</div>;
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    setUserInfo(null);
-    setIsSignin(false);
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/signout');
+    } catch (error) {
+      console.error('서버 로그아웃 실패', error);
+    } finally {
+      localStorage.removeItem('accessToken');
+      setUserInfo(null);
+      setIsSignin(false);
+    }
   };
 
   const routes = useRoutes([
     {
-      path: '/login',
+      path: '/signin',
       element: !isSignin || !userInfo ? (
         <AuthPage onSignin={onSignin} />
       ) : userInfo ? (
@@ -47,7 +56,7 @@ export default function AppRoutes({ userInfo, isSignin, isLoading, setUserInfo, 
         isSignin && userInfo ? (
           <InvitePage userInfo={userInfo} setUserInfo={setUserInfo} handleLogout={handleLogout}/>
         ) : (
-          <Navigate to="/login" replace />
+          <Navigate to="/signin" replace />
         ),
     },
     {
@@ -60,8 +69,17 @@ export default function AppRoutes({ userInfo, isSignin, isLoading, setUserInfo, 
         ),
     },
     {
+      path: '/create-post',
+      element:
+        isSignin && userInfo?.userConnectionStatus === 'CONNECTED' && userInfo.userConnectionId ? (
+          <CreatePostPage userConnectionId={userInfo.userConnectionId} />
+        ) : (
+          <Navigate to="/invite" replace />
+        ),
+    },
+    {
       path: '*',
-      element: <Navigate to="/login" replace />,
+      element: <Navigate to="/signin" replace />,
     },
   ]);
 

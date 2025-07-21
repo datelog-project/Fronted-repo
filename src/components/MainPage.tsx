@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './MainPage.css';
 import type { UserInfoResponse } from '../App';
+import api from '../api/api';
+import KakaoMap from '../KakaoMap';
+import defaultThumbnail from '../assets/withlog_logo.png';
+import { useNavigate } from 'react-router-dom';
 
 interface MainPageProps {
   userInfo: UserInfoResponse;
@@ -8,31 +12,152 @@ interface MainPageProps {
   handleLogout: () => void;
 }
 
-const MainPage: React.FC<MainPageProps> = ({ userInfo , handleLogout}) => {
-  const { partnerName, userName} = userInfo;
+interface WithLogPreviewResponse {
+  id: string;
+  placeName: string;
+  placeAddress: string;
+  placeLat: number;
+  placeLng: number;
+  date: string;
+  thumbnailUrl: string | null;
+  previewNote: string | null;
+  feelingScore: number | null;
+}
+
+const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
+  const { partnerName, userName, userConnectionId } = userInfo;
+  const [withLogs, setWithLogs] = useState<WithLogPreviewResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  
+  // 필터 상태
+  const [searchText, setSearchText] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [feelingScore, setFeelingScore] = useState<number | null>(null);
+  
+
+  // 필터링된 게시글 리스트
+  const filteredLogs = withLogs.filter(log => {
+    if (selectedMonth && !log.date.startsWith(selectedMonth)) return false;
+
+    if (searchText) {
+      const keyword = searchText.toLowerCase();
+      const combined = `${log.placeName} ${log.placeAddress} ${log.previewNote}`.toLowerCase();
+      if (!combined.includes(keyword)) return false;
+    }
+
+    if (feelingScore !== null && log.feelingScore !== null && log.feelingScore < feelingScore) return false;
+
+    return true;
+  });
+  
+  useEffect(() => {
+    if (!userConnectionId) return;
+
+    setLoading(true);
+    api.get(`/with-logs/${userConnectionId}`)
+      .then(res => {
+        const previews = res.data.map((log: any) => {
+          return {
+            id: log.id,
+            placeName: log.placeName,
+            placeAddress: log.placeAddress,
+            placeLat: log.placeLat,
+            placeLng: log.placeLng,
+            date: log.date,
+            thumbnailUrl: log.thumbnailUrl,
+            previewNote: log.previewNote ?? log.note ?? '',
+            feelingScore: log.feelingScore ?? null,
+          };
+        });
+        setWithLogs(previews);
+      })
+      .catch(err => {
+        console.error('게시글 목록 불러오기 실패', err);
+        setWithLogs([]);
+      })
+      .finally(() => setLoading(false));
+  }, [userConnectionId]);
 
   return (
-    <div className="main-container">
-      <header className="main-header">
-        <h1>WithLog 💑</h1>
-        <button className="logout-btn" onClick={handleLogout}>
-          로그아웃
-        </button>
+    <div className="main-page">
+      <header className="header-bar">
+        <input
+          type="text"
+          placeholder="검색어를 입력하세요"
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+        />
+        <h1>{userName} 💕 {partnerName ?? '아직 연결되지 않음'} 의 WithLog</h1>
+        <button onClick={handleLogout}>로그아웃</button>
       </header>
-      <main className="main-content">
-        <h2>안녕하세요, {userName}님!</h2>
-        <p>
-          당신은 현재 <strong>{partnerName ?? '아직 연결되지 않음'}</strong>님과
-          연결되어 있어요 💕
-        </p>
 
-        <div className="placeholder-box">
-          <p>연인과의 추억을 기록해보세요 📖</p>
-        </div>
-      </main>
+      <div className="main-content">
+        <aside className="filter-sidebar">
+          <h3>필터</h3>
+          <label>
+            월별
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={e => setSelectedMonth(e.target.value)}
+            />
+          </label>
+
+          <label>
+            기분 점수: {feelingScore ?? '선택 안함'}
+            <input
+              type="range"
+              min={1}
+              max={10}
+              value={feelingScore ?? 5} // 기본값 5
+              onChange={e => setFeelingScore(Number(e.target.value))}
+            />
+            <button
+              type="button"
+              className="reset-feeling-btn"
+              onClick={() => setFeelingScore(null)}
+            >
+              초기화
+            </button>
+          </label>
+        </aside>
+
+        <section className="content-area">
+          <button className="write-post-btn" onClick={() => navigate('/create-post')} >게시글 작성</button>
+
+          {loading ? (
+            <p>게시글 로딩중...</p>
+          ) : filteredLogs.length === 0 ? (
+            <p>조건에 맞는 게시글이 없습니다.</p>
+          ) : (
+            filteredLogs.map(log => (
+              <div key={log.id} className="with-log-card">
+                <div className="with-log-map">
+                  <KakaoMap lat={log.placeLat} lng={log.placeLng} />
+                </div>
+                <div className="with-log-content">
+                  <img
+                    src={log.thumbnailUrl || defaultThumbnail}
+                    alt="썸네일"
+                    className="with-log-thumbnail"
+                  />
+                  <div className="with-log-text">
+                    <h2>{log.placeName}</h2>
+                    <p>{log.date}</p>
+                    <p>{log.previewNote}</p>
+                    <p>기분 점수: {log.feelingScore ?? '-'}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      </div>
     </div>
   );
 };
 
 export default MainPage;
+
 

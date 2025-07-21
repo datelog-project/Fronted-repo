@@ -88,11 +88,9 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo, handleLo
         <img src={logo} alt="WithLog 로고" className="logo-img" />
       </div>
       <div className="right-page">
-        <div className="logout-wrapper">
-          <button className="logout-btn" onClick={handleLogout}>
+          <button className="logout-wrapper" onClick={handleLogout}>
             로그아웃
           </button>
-        </div>
         <div className="invite-form-wrapper">
           {isPending ? (
             isSender ? (

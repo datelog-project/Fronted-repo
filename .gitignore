@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+index.html
+src/components/CreatePostPage.tsx
+src/components/CreatePostPage.css
+src/KakaoMap.tsx
+src/KakaoMapSearch.tsx
