@@ -4,6 +4,8 @@ import AuthPage from './components/AuthPage';
 import InvitePage from './components/InvitePage';
 import MainPage from './components/MainPage';
 import CreatePostPage from './components/CreatePostPage';
+import WithLogDetailPage from './components/WithLogDetailPage';
+import EditWithLogPage from './components/EditWithLogPage';
 
 
 import type { UserInfoResponse } from './App';
@@ -72,9 +74,31 @@ export default function AppRoutes({ userInfo, isSignin, isLoading, setUserInfo, 
       path: '/create-post',
       element:
         isSignin && userInfo?.userConnectionStatus === 'CONNECTED' && userInfo.userConnectionId ? (
-          <CreatePostPage userConnectionId={userInfo.userConnectionId} />
+          <CreatePostPage
+            userInfo={userInfo}
+            userConnectionId={userInfo.userConnectionId}
+            handleLogout={handleLogout}
+          />
         ) : (
           <Navigate to="/invite" replace />
+        ),
+    },
+    {
+      path: '/with-logs/:withLogId/details',
+      element:
+        isSignin && userInfo?.userConnectionStatus === 'CONNECTED' ? (
+          <WithLogDetailPage userInfo={userInfo} handleLogout={handleLogout} />
+        ) : (
+          <Navigate to="/signin" replace />
+        ),
+    },
+    {
+      path: '/with-logs/:withLogId/edit',
+      element:
+        isSignin && userInfo?.userConnectionStatus === 'CONNECTED' ? (
+          <EditWithLogPage userInfo={userInfo} handleLogout={handleLogout} />
+        ) : (
+          <Navigate to="/signin" replace />
         ),
     },
     {

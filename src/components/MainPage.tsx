@@ -5,6 +5,7 @@ import api from '../api/api';
 import KakaoMap from '../KakaoMap';
 import defaultThumbnail from '../assets/withlog_logo.png';
 import { useNavigate } from 'react-router-dom';
+import HeaderBar from './HeaderBar';
 
 interface MainPageProps {
   userInfo: UserInfoResponse;
@@ -34,6 +35,23 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [feelingScore, setFeelingScore] = useState<number | null>(null);
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('정말 이 게시글을 삭제하시겠습니까?')) return;
+
+    try {
+      await api.delete(`/with-logs/${id}`);
+      setWithLogs(prev => prev.filter(log => log.id !== id));
+      alert('게시글이 삭제되었습니다.');
+    } catch (error) {
+      console.error(error);
+      alert('게시글 삭제에 실패했습니다.');
+    }
+  };
+
+  const handleClickPost = (withLogId: string) => {
+    navigate(`/with-logs/${withLogId}/details`);
+  };
   
 
   // 필터링된 게시글 리스트
@@ -81,16 +99,14 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
 
   return (
     <div className="main-page">
-      <header className="header-bar">
-        <input
-          type="text"
-          placeholder="검색어를 입력하세요"
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-        />
-        <h1>{userName} 💕 {partnerName ?? '아직 연결되지 않음'} 의 WithLog</h1>
-        <button onClick={handleLogout}>로그아웃</button>
-      </header>
+      <HeaderBar
+        userName={userName}
+        partnerName={partnerName}
+        handleLogout={handleLogout}
+        showSearch={true}
+        searchText={searchText}
+        onSearchChange={e => setSearchText(e.target.value)}
+      />
 
       <div className="main-content">
         <aside className="filter-sidebar">
@@ -124,7 +140,17 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
         </aside>
 
         <section className="content-area">
-          <button className="write-post-btn" onClick={() => navigate('/create-post')} >게시글 작성</button>
+          <button
+            className="write-post-btn" onClick={() => {
+              if (!userConnectionId) {
+                alert("아직 연결된 상대가 없습니다.");
+                return;
+              }
+              navigate(`/create-post?connectionId=${userConnectionId}`);
+            }}
+          >
+            게시글 작성
+          </button>
 
           {loading ? (
             <p>게시글 로딩중...</p>
@@ -132,7 +158,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
             <p>조건에 맞는 게시글이 없습니다.</p>
           ) : (
             filteredLogs.map(log => (
-              <div key={log.id} className="with-log-card">
+              <div key={log.id} className="with-log-card" onClick={() => handleClickPost(log.id)} style={{ cursor: 'pointer' }}>
                 <div className="with-log-map">
                   <KakaoMap lat={log.placeLat} lng={log.placeLng} />
                 </div>
@@ -148,6 +174,15 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
                     <p>{log.previewNote}</p>
                     <p>기분 점수: {log.feelingScore ?? '-'}</p>
                   </div>
+                  <button
+                    className="delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation(); // 삭제 버튼 클릭 시 상세 페이지 이동 방지
+                      handleDelete(log.id);
+                    }}
+                  >
+                    삭제
+                  </button>
                 </div>
               </div>
             ))

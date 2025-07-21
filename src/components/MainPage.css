@@ -8,24 +8,25 @@ html, body, #root {
 
 .main-page {
   max-width: 1400px;
-  width: 100%;           /* 부모 너비까지 최대한 확장 */
-  margin: 0 auto;        /* 좌우 중앙 정렬 */
-  min-width: 1200px;     /* 필요 시 최소 너비 설정 */
+  width: 100%;
+  margin: 0 auto;
+  min-width: 1200px;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 0 20px;
-  box-sizing: border-box; /* 패딩까지 포함해서 크기 계산 */
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
 }
 
+/* 메인 콘텐츠 영역은 헤더 밖에 위치 */
 .main-content {
-  display: flex;
-  gap: 20px; /* 사이 공간 */
-  padding: 20px;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1400px; /* 필요하면 조절 */
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+  padding: 20px 0;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
 }
 
 /* 상단바 */
@@ -218,4 +219,21 @@ html, body, #root {
 
 .reset-feeling-btn:hover {
   background-color: #444;
+}
+
+.delete-btn {
+  margin-left: 20px;
+  padding: 6px 12px;
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: center;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
 }

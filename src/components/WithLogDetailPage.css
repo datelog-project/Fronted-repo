@@ -1,0 +1,63 @@
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.title {
+  font-size: 28px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.text {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.memo {
+  white-space: pre-wrap;
+  margin-bottom: 24px;
+}
+
+.map-wrapper {
+  margin-bottom: 24px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 300px; /* KakaoMap 높이 맞춰주세요 */
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.button.logout {
+  background-color: #dc3545;
+}
+
+.button.logout:hover {
+  background-color: #a71d2a;
+}
