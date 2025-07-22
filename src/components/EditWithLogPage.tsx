@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import KakaoMapSearch from '../KakaoMapSearch';
 import type { UserInfoResponse } from '../App';
+import './EditWithLogPage.css'
 
 interface EditWithLogPageProps {
   userInfo: UserInfoResponse;
@@ -146,6 +147,8 @@ export default function EditWithLogPage({ handleLogout }: EditWithLogPageProps) 
             : null
         }
         onSelectPlace={handlePlaceSelect}
+        keyword=""            // 빈 문자열로 우선 전달하거나 상태로 관리
+        onSearchDone={() => { /* 검색 완료 후 작업이 없으면 빈 함수 */ }}
       />
 
       <button type="submit">수정 완료</button>

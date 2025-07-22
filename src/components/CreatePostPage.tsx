@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../api/api'; // axios 인스턴스
-import KakaoMapSearch from '../KakaoMapSearch'; // 장소 선택 컴포넌트
+import KakaoMapSearch from '../KakaoMapSearch';
 import { useNavigate } from 'react-router-dom';
 import HeaderBar from './HeaderBar';
 import './CreatePostPage.css';
@@ -26,14 +26,14 @@ interface CreatePostPageProps {
   handleLogout: () => void;
 }
 
+const BASE_URL = 'http://localhost:8080';
+
 const CreatePostPage: React.FC<CreatePostPageProps> = ({
   userConnectionId,
   userInfo,
   handleLogout,
 }) => {
-  // 제목 상태 추가
   const [title, setTitle] = useState('');
-
   const [selectedPlace, setSelectedPlace] = useState<PlaceInfo | null>(null);
   const [date, setDate] = useState('');
   const [feelingScore, setFeelingScore] = useState(5);
@@ -41,7 +41,44 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
   const [cost, setCost] = useState('');
   const [mediaList, setMediaList] = useState<MediaRequest[]>([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchTrigger, setSearchTrigger] = useState(''); // 검색 버튼 누를 때 값 전달
+
   const navigate = useNavigate();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    const uploadedMedia: MediaRequest[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await api.post('/media/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        const mediaUrl = res.data.url;
+        const type = file.type.startsWith('video') ? 'VIDEO' : 'IMAGE';
+        uploadedMedia.push({ mediaUrl, mediaType: type });
+      } catch (err) {
+        console.error('파일 업로드 실패:', err);
+        alert(`"${file.name}" 업로드에 실패했습니다.`);
+      }
+    }
+
+    setMediaList((prev) => [...prev, ...uploadedMedia]);
+    setUploading(false);
+  };
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -66,7 +103,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
 
     const postData = {
       date,
-      placeName: title,  // 장소 이름 대신 제목 사용
+      placeName: title,
       placeAddress: selectedPlace.address,
       placeLat: selectedPlace.lat,
       placeLng: selectedPlace.lng,
@@ -89,6 +126,13 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
     }
   };
 
+  const handleSearchClick = () => {
+    if (searchKeyword.trim()) {
+      setSelectedPlace(null); // 검색 초기화
+      setSearchTrigger(searchKeyword.trim()); // 검색 트리거에 넣어줘서 검색 실행
+    }
+  };
+
   return (
     <div className="main-page create-post-wrapper">
       <HeaderBar
@@ -107,7 +151,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
           type="text"
           placeholder="장소 이름 대신 입력할 제목을 적으세요"
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={(e) => setTitle(e.target.value)}
         />
 
         <label htmlFor="date-input">날짜</label>
@@ -119,17 +163,41 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
         />
 
         <label>장소 검색</label>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="검색어를 입력하세요"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearchClick();
+              }
+            }}
+          />
+          <button onClick={handleSearchClick} disabled={!searchKeyword.trim()}>
+            검색
+          </button>
+        </div>
+
         <div className="map-wrapper">
-          <KakaoMapSearch selectedPlace={selectedPlace} onSelectPlace={setSelectedPlace} />
+          <KakaoMapSearch
+            selectedPlace={selectedPlace}
+            onSelectPlace={setSelectedPlace}
+            keyword={searchTrigger}
+            onSearchDone={() => setSearchTrigger('')} // 검색 끝나면 초기화
+          />
         </div>
 
         {selectedPlace && (
           <div className="selected-place">
-            <p><strong>선택된 장소 주소:</strong> {selectedPlace.address}</p>
+            <p>
+              <strong>선택된 장소 주소:</strong> {selectedPlace.address}
+            </p>
           </div>
         )}
 
-        {/* 이하 기존 코드 계속 */}
         <label htmlFor="cost-input">비용 (숫자만 입력)</label>
         <input
           id="cost-input"
@@ -141,10 +209,10 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
           placeholder="예: 10000"
         />
 
-        <label htmlFor="feeling-input">기분 점수 (1~10)</label>
+        <label htmlFor="feeling-input">기분 점수 ({feelingScore}점)</label>
         <input
           id="feeling-input"
-          type="number"
+          type="range"
           min={1}
           max={10}
           value={feelingScore}
@@ -159,33 +227,42 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
           placeholder="오늘의 데이트를 기록하세요 :)"
         />
 
-        <label htmlFor="media-input">미디어 URL 추가</label>
-        <input
-          id="media-input"
-          type="text"
-          placeholder="https://example.com/image.jpg"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              const url = e.currentTarget.value.trim();
-              if (!url) return;
-              const type = url.endsWith('.mp4') ? 'VIDEO' : 'IMAGE';
-              setMediaList((prev) => [...prev, { mediaUrl: url, mediaType: type }]);
-              e.currentTarget.value = '';
-            }
-          }}
-        />
+        <label>미디어 첨부 (이미지/영상)</label>
+        <div className="file-upload-wrapper">
+          <label htmlFor="media-file-input" className="file-upload-button">
+            📎 파일 선택하기
+          </label>
+          <input
+            id="media-file-input"
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            onChange={handleFileChange}
+            disabled={uploading}
+            style={{ display: 'none' }}
+          />
+          {uploading && <p className="uploading-text">업로드 중...</p>}
+        </div>
 
         {mediaList.length > 0 && (
-          <ul className="media-list">
-            {mediaList.map((m, idx) => (
-              <li key={idx}>
-                {m.mediaType} - {m.mediaUrl}
-              </li>
-            ))}
-          </ul>
+          <div className="media-preview-grid">
+            {mediaList.map((m, idx) => {
+              const fullUrl = m.mediaUrl.startsWith('http') ? m.mediaUrl : BASE_URL + m.mediaUrl;
+              const encodedUrl = encodeURI(fullUrl);
+              return (
+                <div key={idx} className="media-card">
+                  {m.mediaType === 'IMAGE' ? (
+                    <img src={encodedUrl} alt={`media-${idx}`} />
+                  ) : (
+                    <video src={encodedUrl} controls />
+                  )}
+                </div>
+              );
+            })}
+          </div>
         )}
 
-        <button onClick={handleSubmit} disabled={loading}>
+        <button onClick={handleSubmit} disabled={loading || uploading}>
           {loading ? '등록 중...' : '게시글 등록하기'}
         </button>
       </div>

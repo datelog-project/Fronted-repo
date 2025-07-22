@@ -31,7 +31,8 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
   const [withLogs, setWithLogs] = useState<WithLogPreviewResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+  const BASE_URL = 'http://localhost:8080';
+
   // 필터 상태
   const [searchText, setSearchText] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -53,7 +54,6 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
   const handleClickPost = (withLogId: string) => {
     navigate(`/with-logs/${withLogId}/details`);
   };
-  
 
   // 필터링된 게시글 리스트
   const filteredLogs = withLogs.filter(log => {
@@ -69,7 +69,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
 
     return true;
   });
-  
+
   useEffect(() => {
     if (!userConnectionId) return;
 
@@ -77,6 +77,16 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
     api.get(`/with-logs/${userConnectionId}`)
       .then(res => {
         const previews = res.data.map((log: any) => {
+          let thumbUrl = log.thumbnailUrl;
+
+          // thumbnailUrl이 있을 때, 절대경로로 변환
+          if (thumbUrl && !thumbUrl.startsWith('http')) {
+            if (!thumbUrl.startsWith('/')) {
+              thumbUrl = '/' + thumbUrl;
+            }
+            thumbUrl = BASE_URL + thumbUrl;
+          }
+
           return {
             id: log.id,
             placeName: log.placeName,
@@ -84,7 +94,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
             placeLat: log.placeLat,
             placeLng: log.placeLng,
             date: log.date,
-            thumbnailUrl: log.thumbnailUrl,
+            thumbnailUrl: thumbUrl,
             previewNote: log.previewNote ?? log.note ?? '',
             cost: log.cost ?? null,
             feelingScore: log.feelingScore ?? null,
@@ -143,7 +153,8 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
 
         <section className="content-area">
           <button
-            className="write-post-btn" onClick={() => {
+            className="write-post-btn"
+            onClick={() => {
               if (!userConnectionId) {
                 alert("아직 연결된 상대가 없습니다.");
                 return;
@@ -160,7 +171,12 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
             <p>조건에 맞는 게시글이 없습니다.</p>
           ) : (
             filteredLogs.map(log => (
-              <div key={log.id} className="with-log-card" onClick={() => handleClickPost(log.id)} style={{ cursor: 'pointer' }}>
+              <div
+                key={log.id}
+                className="with-log-card"
+                onClick={() => handleClickPost(log.id)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="with-log-map" onClick={(e) => e.stopPropagation()}>
                   <KakaoMap lat={log.placeLat} lng={log.placeLng} />
                 </div>
@@ -197,5 +213,3 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
 };
 
 export default MainPage;
-
-

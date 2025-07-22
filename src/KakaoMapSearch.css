@@ -1,56 +1,64 @@
-.map-wrapper {
-  width: 100%;
-  height: 400px;
-  margin: 10px 0;
-}
-
 .map-container {
   width: 100%;
-  height: 100%;     /* 부모 높이 꽉 채우기 */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
-.search-bar {
+.kakao-search-bar {
   display: flex;
   gap: 10px;
   padding: 10px;
-  background-color: #f7f7f7;
-  border-bottom: 1px solid #ccc;
-  flex-shrink: 0;
+  background-color: #fffafc;
+  border: 1px solid #ffdede;
+  border-radius: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-.search-bar input {
+.kakao-search-bar input {
   flex-grow: 1;
-  min-width: 0;
-  padding: 8px;
-  font-size: 14px;
+  padding: 10px 14px;
+  font-size: 15px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background-color: white;
 }
 
-.search-bar button {
+.kakao-search-bar input:focus {
+  border-color: #ff6f61;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 111, 97, 0.2);
+}
+
+.kakao-search-bar button {
   flex-shrink: 0;
-  width: 90px;
-  padding: 8px 12px;
-  font-size: 14px;
-  background-color: #0066ff;
+  padding: 10px 14px;
+  font-size: 16px;
+  background-color: #ff6f61;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.search-bar button:disabled {
+.kakao-search-bar button:hover:not(:disabled) {
+  background-color: #e65a4f;
+}
+
+.kakao-search-bar button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
 .map-box {
-  flex-grow: 1;
-  min-height: 0;   /* flexbox 스크롤 버그 예방 */
-  border: 1px solid #ddd;
   width: 100%;
-  box-sizing: border-box;
+  height: 350px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
 }

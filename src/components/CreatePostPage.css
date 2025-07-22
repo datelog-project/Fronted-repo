@@ -135,38 +135,51 @@
 
 .search-bar {
   display: flex;
-  gap: 10px;
-  padding: 10px;
-  background-color: #f7f7f7;
-  border-bottom: 1px solid #ccc;
-  flex-shrink: 0;
+  gap: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
-.search-bar input {
+.search-bar input[type="text"] {
   flex-grow: 1;
-  min-width: 0;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 2px solid #ff6f61;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.search-bar input[type="text"]:focus {
+  border-color: #e65a4f;
+  box-shadow: 0 0 8px rgba(230, 90, 79, 0.5);
 }
 
 .search-bar button {
-  flex-shrink: 0;
-  width: 90px;
-  padding: 8px 12px;
-  font-size: 14px;
-  background-color: #0066ff;
+  padding: 12px 24px;
+  background-color: #ff6f61;
   color: white;
+  font-weight: 700;
+  font-size: 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 4px 6px rgba(255, 111, 97, 0.4);
+  transition: background-color 0.3s ease;
+  user-select: none;
 }
 
 .search-bar button:disabled {
-  background-color: #ccc;
+  background-color: #f0a9a0;
   cursor: not-allowed;
+  box-shadow: none;
 }
+
+.search-bar button:not(:disabled):hover {
+  background-color: #e65a4f;
+}
+
 
 .map-box {
   flex-grow: 1;
@@ -175,3 +188,97 @@
   border: 1px solid #ddd;
   box-sizing: border-box;
 }
+
+
+.create-post-container label {
+  margin-top: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.create-post-container input[type="range"] {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.media-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.media-card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.media-card img,
+.media-card video {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* 추가 감성 스타일 */
+.create-post-container > h2 {
+  font-size: 2.2rem;
+  color: #ff6f61;
+  margin-bottom: 24px;
+}
+
+.create-post-container button {
+  background-color: #ff6f61;
+}
+
+.create-post-container button:hover:not(:disabled) {
+  background-color: #e65a4f;
+}
+
+.selected-place {
+  background-color: #fff3f3;
+  border: 1px dashed #ffb3b3;
+  color: #d14444;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #ff6f61;
+  box-shadow: 0 0 0 2px rgba(255, 111, 97, 0.2);
+}
+
+/* 파일 업로드 커스텀 스타일 */
+.file-upload-wrapper {
+  margin-top: 12px;
+}
+
+.file-upload-button {
+  display: inline-block;
+  padding: 10px 18px;
+  background-color: #ff8a80;
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  user-select: none;
+}
+
+.file-upload-button:hover {
+  background-color: #ff6f61;
+}
+
+.uploading-text {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* 위에 있던 media-preview-grid와 media-card도 유지 */
