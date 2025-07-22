@@ -31,28 +31,48 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
   userInfo,
   handleLogout,
 }) => {
+  // 제목 상태 추가
+  const [title, setTitle] = useState('');
+
   const [selectedPlace, setSelectedPlace] = useState<PlaceInfo | null>(null);
   const [date, setDate] = useState('');
   const [feelingScore, setFeelingScore] = useState(5);
   const [note, setNote] = useState('');
+  const [cost, setCost] = useState('');
   const [mediaList, setMediaList] = useState<MediaRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
+    if (!title.trim()) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
     if (!selectedPlace) {
       alert('장소를 선택해주세요.');
       return;
     }
 
+    if (!cost || Number(cost) <= 0) {
+      alert('비용을 올바르게 입력해주세요.');
+      return;
+    }
+
+    if (!date) {
+      alert('날짜를 선택해주세요.');
+      return;
+    }
+
     const postData = {
       date,
-      placeName: selectedPlace.name,
+      placeName: title,  // 장소 이름 대신 제목 사용
       placeAddress: selectedPlace.address,
       placeLat: selectedPlace.lat,
       placeLng: selectedPlace.lng,
       feelingScore,
       note,
+      cost: Number(cost),
       mediaList: mediaList.length > 0 ? mediaList : null,
     };
 
@@ -60,7 +80,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
       setLoading(true);
       await api.post(`/with-logs/${userConnectionId}`, postData);
       alert('게시글이 등록되었습니다!');
-      navigate('/main'); // 성공 후 메인으로 이동
+      navigate('/main');
     } catch (err) {
       console.error(err);
       alert('게시글 등록에 실패했습니다.');
@@ -81,7 +101,15 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
       <div className="create-post-container">
         <h2>📌 게시글 작성</h2>
 
-        {/* 이하 폼 요소 동일 */}
+        <label htmlFor="title-input">제목</label>
+        <input
+          id="title-input"
+          type="text"
+          placeholder="장소 이름 대신 입력할 제목을 적으세요"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+        />
+
         <label htmlFor="date-input">날짜</label>
         <input
           id="date-input"
@@ -92,15 +120,26 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
 
         <label>장소 검색</label>
         <div className="map-wrapper">
-          <KakaoMapSearch onSelectPlace={setSelectedPlace} />
+          <KakaoMapSearch selectedPlace={selectedPlace} onSelectPlace={setSelectedPlace} />
         </div>
 
         {selectedPlace && (
           <div className="selected-place">
-            <p><strong>선택된 장소:</strong> {selectedPlace.name}</p>
-            <p><strong>주소:</strong> {selectedPlace.address}</p>
+            <p><strong>선택된 장소 주소:</strong> {selectedPlace.address}</p>
           </div>
         )}
+
+        {/* 이하 기존 코드 계속 */}
+        <label htmlFor="cost-input">비용 (숫자만 입력)</label>
+        <input
+          id="cost-input"
+          type="number"
+          min={0}
+          step={1}
+          value={cost}
+          onChange={(e) => setCost(e.target.value)}
+          placeholder="예: 10000"
+        />
 
         <label htmlFor="feeling-input">기분 점수 (1~10)</label>
         <input

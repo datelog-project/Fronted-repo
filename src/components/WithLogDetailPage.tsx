@@ -18,6 +18,7 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
     placeAddress: string;
     feelingScore: number;
     note: string;
+    cost: number;    
     placeLat: number | null;
     placeLng: number | null;
   }>(null);
@@ -35,7 +36,10 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
     <div className="container">
       <h2 className="title">{log.date}</h2>
       <p className="text">
-        <strong>장소:</strong> {log.placeName} ({log.placeAddress})
+        <strong>제목:</strong> {log.placeName || '(제목 없음)'} ({log.placeAddress})
+      </p>
+      <p className="text">
+        <strong>비용:</strong> {log.cost?.toLocaleString()} 원
       </p>
       <p className="text">
         <strong>기분 점수:</strong> {log.feelingScore}

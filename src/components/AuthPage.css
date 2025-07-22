@@ -10,9 +10,9 @@ html, body, #root {
 
 .book-container {
   display: flex;
-  width: 880px;
-  height: 520px;
-  margin: 60px auto;
+  width: 1000px;
+  height: 650px;
+  margin: 0;
   border-radius: 12px;
   overflow: hidden;
   background-color: white;
@@ -47,7 +47,7 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* 기존 flex-start -> center 변경 */
   box-sizing: border-box;
 }
 
@@ -137,7 +137,7 @@ form button:hover {
 
 /* InvitePage (위 코드 공유) */
 .invite-form-wrapper h2 {
-  padding-top: 55px;
+  padding-top: 0;
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 30px;

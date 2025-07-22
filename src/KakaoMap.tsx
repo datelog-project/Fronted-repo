@@ -31,7 +31,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ lat, lng }) => {
 
     if (!(window as any).kakao) {
       const script = document.createElement('script');
-      script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_API_KEY}&autoload=false';
+      script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=fa1e9e47a1f302a0bee9701467503052&libraries=services&autoload=false';
       script.async = true;
       document.head.appendChild(script);
 

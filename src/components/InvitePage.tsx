@@ -94,7 +94,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo, handleLo
         <div className="invite-form-wrapper">
           {isPending ? (
             isSender ? (
-              <div style={{ textAlign: 'center', marginTop: '100px' }}>
+              <div style={{ textAlign: 'center' }}>
                 <h2 style={{fontSize: '24px'}}>⏳ 상대방의 수락을 기다리고 있어요!</h2>
                 <p style={{ fontSize: '14px', color: '#888' }}>
                   초대한 상대: {userInfo.partnerEmail || '알 수 없음'}

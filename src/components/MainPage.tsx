@@ -22,6 +22,7 @@ interface WithLogPreviewResponse {
   date: string;
   thumbnailUrl: string | null;
   previewNote: string | null;
+  cost: number | null;
   feelingScore: number | null;
 }
 
@@ -85,6 +86,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
             date: log.date,
             thumbnailUrl: log.thumbnailUrl,
             previewNote: log.previewNote ?? log.note ?? '',
+            cost: log.cost ?? null,
             feelingScore: log.feelingScore ?? null,
           };
         });
@@ -159,7 +161,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
           ) : (
             filteredLogs.map(log => (
               <div key={log.id} className="with-log-card" onClick={() => handleClickPost(log.id)} style={{ cursor: 'pointer' }}>
-                <div className="with-log-map">
+                <div className="with-log-map" onClick={(e) => e.stopPropagation()}>
                   <KakaoMap lat={log.placeLat} lng={log.placeLng} />
                 </div>
                 <div className="with-log-content">
@@ -173,6 +175,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
                     <p>{log.date}</p>
                     <p>{log.previewNote}</p>
                     <p>기분 점수: {log.feelingScore ?? '-'}</p>
+                    <p>비용: {log.cost !== null ? `${log.cost.toLocaleString()} 원` : '-'}</p>
                   </div>
                   <button
                     className="delete-btn"

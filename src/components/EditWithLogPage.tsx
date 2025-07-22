@@ -9,7 +9,7 @@ interface EditWithLogPageProps {
   handleLogout: () => Promise<void>;
 }
 
-export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogPageProps) {
+export default function EditWithLogPage({ handleLogout }: EditWithLogPageProps) {
   const { withLogId } = useParams();
   const navigate = useNavigate();
 
@@ -21,6 +21,7 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
     placeAddress: '',
     placeLat: null as number | null,
     placeLng: null as number | null,
+    cost: 0,
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
         placeAddress: data.placeAddress,
         placeLat: data.placeLat,
         placeLng: data.placeLng,
+        cost: data.cost ?? 0,
       });
     });
   }, [withLogId]);
@@ -76,12 +78,25 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
   return (
     <form onSubmit={handleSubmit}>
       <label>
+        제목:
+        <input
+          type="text"
+          name="placeName"
+          value={formData.placeName}
+          onChange={handleChange}
+          placeholder="장소 제목을 입력하세요"
+          required
+        />
+      </label>
+
+      <label>
         날짜:
         <input
           type="date"
           name="date"
           value={formData.date}
           onChange={handleChange}
+          required
         />
       </label>
 
@@ -94,6 +109,7 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
           onChange={handleChange}
           min={1}
           max={10}
+          required
         />
       </label>
 
@@ -103,6 +119,18 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
           name="note"
           value={formData.note}
           onChange={handleChange}
+        />
+      </label>
+
+      <label>
+        비용:
+        <input
+          type="number"
+          name="cost"
+          value={formData.cost}
+          onChange={handleChange}
+          min={0}
+          step={1}
         />
       </label>
 
