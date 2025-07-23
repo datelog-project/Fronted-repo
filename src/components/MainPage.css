@@ -1,9 +1,15 @@
-/* MainPage.css */
+/* 기존 사이즈 전부 그대로 유지 + 디자인 개선 */
+
 html, body, #root {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9fafb;
+  color: #2c3e50;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .main-page {
@@ -17,9 +23,10 @@ html, body, #root {
   padding-left: 20px;
   padding-right: 20px;
   box-sizing: border-box;
+  background-color: #fff;
 }
 
-/* 메인 콘텐츠 영역은 헤더 밖에 위치 */
+/* 메인 콘텐츠 영역 */
 .main-content {
   display: grid;
   grid-template-columns: 250px 1fr;
@@ -35,28 +42,30 @@ html, body, #root {
   align-items: center;
   justify-content: space-between;
   background-color: #ffffff;
-  color: rgb(0, 0, 0);
+  color: #34495e;
   padding: 12px 24px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
   z-index: 10;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.3rem;
 }
 
 .header-bar input[type="text"] {
   width: 250px;
   padding: 6px 12px;
   border-radius: 20px;
-  border: none;
+  border: 1.8px solid #d1d9e6;
   outline: none;
   font-size: 14px;
+  transition: border-color 0.3s ease;
 }
 
-.header-bar h1 {
-  margin: 0;
-  font-weight: 600;
-  font-size: 1.3rem;
-  user-select: none;
+.header-bar input[type="text"]:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74,144,226,0.3);
 }
 
 .header-bar button {
@@ -67,44 +76,146 @@ html, body, #root {
   padding: 8px 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(74,144,226,0.4);
 }
 
 .header-bar button:hover {
   background-color: #357ab8;
+  box-shadow: 0 6px 15px rgba(53,122,184,0.6);
 }
 
-/* 본문 영역 */
-.main-content {
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 20px;
-  padding: 20px;
-  height: calc(100vh - 60px); /* 상단바 제외 높이 */
-  overflow: hidden;
-}
+/* 월별 필터와 날짜 입력 커스텀 스타일 */
 
-/* 좌측 필터 */
-.filter-sidebar {
-  flex-shrink: 0; /* 축소 방지 */
-  width: 250px; /* 적당한 고정 너비 */
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-sizing: border-box;
-  overflow-y: auto; /* 내용이 길 때 스크롤 */
-  max-height: 80vh;
-}
-.filter-sidebar input[type="month"],
-.filter-sidebar input[type="range"] {
-  margin-top: 8px; 
-  width: 100%;
-  box-sizing: border-box;
-}
+/* 부모 라벨 스타일 */
 .filter-sidebar label {
   display: block;
-  margin-bottom: 30px; /* 여백 크게 늘림 */
+  margin-bottom: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2c3e50;
+  user-select: none;
+}
+
+/* input[type="month"] 기본 스타일 숨기고 커스텀 스타일 */
+.filter-sidebar input[type="month"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1.8px solid #d1d9e6;
+  border-radius: 12px;
+  background-color: #fdfdfd;
+  cursor: pointer;
+  color: #34495e;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+
+  /* 기본 화살표 나오도록 배경 없앰 */
+  background-image: none;
+  padding-right: 12px;
+}
+
+.filter-sidebar input[type="month"]:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74,144,226,0.35);
+  outline: none;
+}
+
+.filter-sidebar input[type="month"]:hover {
+  border-color: #357ab8;
+}
+
+
+/* input[type="month"] focus 효과 */
+.filter-sidebar input[type="month"]:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74,144,226,0.35);
+  outline: none;
+}
+
+
+
+/* input[type="month"] 커서 포인터로 명확하게 */
+.filter-sidebar input[type="month"]:hover {
+  border-color: #357ab8;
+}
+
+/* input[type="range"] 스타일도 좀 더 부드럽게 */
+.filter-sidebar input[type="range"] {
+  width: 100%;
+  height: 8px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #4a90e2 0%, #357ab8 100%);
+  cursor: pointer;
+}
+
+/* 크롬, 사파리용 슬라이더 트랙 */
+.filter-sidebar input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 8px;
+  background: #d1d9e6;
+}
+
+/* 크롬, 사파리용 슬라이더 썸 */
+.filter-sidebar input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #4a90e2;
+  border-radius: 50%;
+  border: 2px solid #357ab8;
+  cursor: pointer;
+  margin-top: -6px; /* 중앙 맞춤 */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.filter-sidebar input[type="range"]:hover::-webkit-slider-thumb {
+  background: #357ab8;
+  border-color: #2a5d8f;
+}
+
+/* 파이어폭스용 슬라이더 */
+.filter-sidebar input[type="range"]::-moz-range-track {
+  height: 8px;
+  border-radius: 8px;
+  background: #d1d9e6;
+}
+
+.filter-sidebar input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #4a90e2;
+  border-radius: 50%;
+  border: 2px solid #357ab8;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.filter-sidebar input[type="range"]:hover::-moz-range-thumb {
+  background: #357ab8;
+  border-color: #2a5d8f;
+}
+
+
+.reset-feeling-btn {
+  margin-left: 10px;
+  margin-top: 10px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  background-color: #6d6d6d;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 1px 3px rgba(109,109,109,0.6);
+}
+
+.reset-feeling-btn:hover {
+  background-color: #444;
+  box-shadow: 0 2px 6px rgba(68,68,68,0.8);
 }
 
 /* 콘텐츠 영역 */
@@ -112,9 +223,8 @@ html, body, #root {
   flex-grow: 1;
   min-width: 0;
   padding: 15px;
-
-  height: calc(100vh - 140px); /* 상단 헤더 + 필터영역 높이 빼고 남은 높이 */
-  overflow-y: auto; /* 세로 스크롤 가능하게 */
+  height: calc(100vh - 140px);
+  overflow-y: auto;
 }
 
 /* 지도 영역 */
@@ -141,11 +251,18 @@ html, body, #root {
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  transition: box-shadow 0.3s ease;
+}
+
+.with-log-card:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .with-log-map {
   width: 100%;
   height: 300px;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
 }
 
 .with-log-content {
@@ -154,7 +271,6 @@ html, body, #root {
   align-items: center;
   gap: 24px;
   position: relative;
-
 }
 
 .with-log-thumbnail {
@@ -163,22 +279,33 @@ html, body, #root {
   object-fit: cover;
   border-radius: 12px;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(74,144,226,0.15);
+  transition: transform 0.3s ease;
+}
+
+.with-log-thumbnail:hover {
+  transform: scale(1.05);
 }
 
 .with-log-text {
   flex: 1 1 auto;
   min-width: 0;
+  font-size: 16px;
+  color: #34495e;
+  line-height: 1.5;
 }
 
 .with-log-text h2 {
   margin-bottom: 8px;
   font-size: 20px;
-  color: #333;
+  font-weight: 700;
+  color: #2c3e50;
 }
 
 .with-log-text p {
   margin: 4px 0;
   color: #555;
+  font-weight: 500;
 }
 
 /* 게시글 작성 버튼 */
@@ -201,46 +328,35 @@ html, body, #root {
   background-color: #357ab8;
 }
 
-.filter-sidebar label input[type="range"] {
-  width: 100%;
-  margin-top: 6px;
-  cursor: pointer;
-}
-
-
-.reset-feeling-btn {
-  margin-left: 10px;
-  padding: 4px 8px;
-  font-size: 0.85rem;
-  background-color: #6d6d6d;
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.reset-feeling-btn:hover {
-  background-color: #444;
-}
-
+/* 삭제 버튼 */
 .mainpage__delete-btn {
-  margin-left: auto; /* 오른쪽 끝 정렬 유지 */
+  margin-left: auto;
   padding: 6px 12px;
-  background-color: #ff6b6b; /* 조금 밝고 산뜻한 빨강 */
+  background-color: #ff6b6b;
   border: none;
   color: white;
   font-weight: 600;
-  border-radius: 8px; /* 모서리 둥글게 */
+  border-radius: 8px;
   cursor: pointer;
   align-self: center;
-  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.5); /* 살짝 그림자 */
+  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.5);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   font-size: 14px;
   user-select: none;
 }
 
 .mainpage__delete-btn:hover {
-  background-color: #e04848; /* 호버시 더 진한 빨강 */
+  background-color: #e04848;
   box-shadow: 0 4px 10px rgba(224, 72, 72, 0.7);
+}
+
+
+.empty-message {
+  display: flex;
+  justify-content: center;  /* 가로 중앙 */
+  align-items: center;      /* 세로 중앙 */
+  height: 60vh;             /* 적당한 높이 지정 */
+  font-size: 1.2rem;
+  color: #666;
+  user-select: none;
 }

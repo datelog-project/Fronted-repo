@@ -16,6 +16,7 @@ html, body, #root {
   border-radius: 12px;
   overflow: hidden;
   background-color: white;
+  perspective: 1500px;
 
   box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.12),
@@ -33,14 +34,7 @@ html, body, #root {
   align-items: center;
   background-color: rgb(241, 229, 254);
   box-shadow: inset -5px 0 15px -5px rgba(0,0,0,0.2);
-
-  backface-visibility: hidden; /* 3D 효과에서 뒤쪽 숨김 */
-  transform-style: preserve-3d;
-  transform-origin: right center;
-  transition: transform 0.8s ease-in-out;
-  position: relative;
 }
-
 
 .logo-img {
   width: 380px;
@@ -59,13 +53,8 @@ html, body, #root {
   justify-content: center;
   box-sizing: border-box;
   box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.15);
-
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  transform-origin: left center;
-  transition: transform 0.8s ease-in-out;
-  position: relative;
 }
+
 
 .form-wrapper {
   width: 100%;
@@ -270,4 +259,3 @@ form button:hover {
 .book-container.signup .left-page {
   transform: rotateY(-180deg);
 }
-

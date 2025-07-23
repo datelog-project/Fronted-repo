@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { api } from '../api/api'; // axios 인스턴스
+import { api } from '../api/api';
 import KakaoMapSearch from '../KakaoMapSearch';
 import { useNavigate } from 'react-router-dom';
 import HeaderBar from './HeaderBar';
@@ -42,9 +42,8 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
   const [mediaList, setMediaList] = useState<MediaRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchTrigger, setSearchTrigger] = useState(''); // 검색 버튼 누를 때 값 전달
+  const [searchTrigger, setSearchTrigger] = useState('');
 
   const navigate = useNavigate();
 
@@ -62,9 +61,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
 
       try {
         const res = await api.post('/media/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
         });
 
         const mediaUrl = res.data.url;
@@ -80,26 +77,15 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
     setUploading(false);
   };
 
+  const handleRemoveMedia = (index: number) => {
+    setMediaList((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async () => {
-    if (!title.trim()) {
-      alert('제목을 입력해주세요.');
-      return;
-    }
-
-    if (!selectedPlace) {
-      alert('장소를 선택해주세요.');
-      return;
-    }
-
-    if (!cost || Number(cost) <= 0) {
-      alert('비용을 올바르게 입력해주세요.');
-      return;
-    }
-
-    if (!date) {
-      alert('날짜를 선택해주세요.');
-      return;
-    }
+    if (!title.trim()) return alert('제목을 입력해주세요.');
+    if (!selectedPlace) return alert('장소를 선택해주세요.');
+    if (!cost || Number(cost) <= 0) return alert('비용을 올바르게 입력해주세요.');
+    if (!date) return alert('날짜를 선택해주세요.');
 
     const postData = {
       date,
@@ -128,8 +114,8 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
 
   const handleSearchClick = () => {
     if (searchKeyword.trim()) {
-      setSelectedPlace(null); // 검색 초기화
-      setSearchTrigger(searchKeyword.trim()); // 검색 트리거에 넣어줘서 검색 실행
+      setSelectedPlace(null);
+      setSearchTrigger(searchKeyword.trim());
     }
   };
 
@@ -186,7 +172,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
             selectedPlace={selectedPlace}
             onSelectPlace={setSelectedPlace}
             keyword={searchTrigger}
-            onSearchDone={() => setSearchTrigger('')} // 검색 끝나면 초기화
+            onSearchDone={() => setSearchTrigger('')}
           />
         </div>
 
@@ -251,6 +237,9 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
               const encodedUrl = encodeURI(fullUrl);
               return (
                 <div key={idx} className="media-card">
+                  <button className="remove-media-button" onClick={() => handleRemoveMedia(idx)}>
+                    ×
+                  </button>
                   {m.mediaType === 'IMAGE' ? (
                     <img src={encodedUrl} alt={`media-${idx}`} />
                   ) : (

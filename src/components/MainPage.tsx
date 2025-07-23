@@ -30,14 +30,22 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
   const { partnerName, userName, userConnectionId } = userInfo;
   const [withLogs, setWithLogs] = useState<WithLogPreviewResponse[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  const getCurrentYearMonth = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    return `${year}-${month}`;
+  };
+
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentYearMonth());
+  const [feelingScore, setFeelingScore] = useState<number | null>(null);
+  const [totalCostForMonth, setTotalCostForMonth] = useState(0);
   const navigate = useNavigate();
   const BASE_URL = 'http://localhost:8080';
 
-  // 필터 상태
-  const [searchText, setSearchText] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [feelingScore, setFeelingScore] = useState<number | null>(null);
-
+  // 게시글 삭제
   const handleDelete = async (id: string) => {
     if (!window.confirm('정말 이 게시글을 삭제하시겠습니까?')) return;
 
@@ -51,6 +59,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
     }
   };
 
+  // 게시글 상세 페이지 이동
   const handleClickPost = (withLogId: string) => {
     navigate(`/with-logs/${withLogId}/details`);
   };
@@ -70,6 +79,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
     return true;
   });
 
+  // withLogs 불러오기
   useEffect(() => {
     if (!userConnectionId) return;
 
@@ -79,7 +89,6 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
         const previews = res.data.map((log: any) => {
           let thumbUrl = log.thumbnailUrl;
 
-          // thumbnailUrl이 있을 때, 절대경로로 변환
           if (thumbUrl && !thumbUrl.startsWith('http')) {
             if (!thumbUrl.startsWith('/')) {
               thumbUrl = '/' + thumbUrl;
@@ -109,6 +118,18 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
       .finally(() => setLoading(false));
   }, [userConnectionId]);
 
+  // 선택한 월에 대한 총 비용 계산
+  useEffect(() => {
+    if (!selectedMonth) {
+      setTotalCostForMonth(0);
+      return;
+    }
+
+    const filteredByMonth = withLogs.filter(log => log.date.startsWith(selectedMonth));
+    const sumCost = filteredByMonth.reduce((sum, log) => sum + (log.cost ?? 0), 0);
+    setTotalCostForMonth(sumCost);
+  }, [selectedMonth, withLogs]);
+
   return (
     <div className="main-page">
       <HeaderBar
@@ -123,6 +144,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
       <div className="main-content">
         <aside className="filter-sidebar">
           <h3>필터</h3>
+
           <label>
             월별
             <input
@@ -132,13 +154,21 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
             />
           </label>
 
+          <div style={{ marginBottom: '20px', fontWeight: '600', color: '#4a90e2' }}>
+            {selectedMonth ? (
+              <>총 데이트 비용: {totalCostForMonth.toLocaleString()} 원</>
+            ) : (
+              <>월을 선택하면 총 데이트 비용이 표시됩니다.</>
+            )}
+          </div>
+
           <label>
             기분 점수: {feelingScore ?? '선택 안함'}
             <input
               type="range"
               min={1}
               max={10}
-              value={feelingScore ?? 5} // 기본값 5
+              value={feelingScore ?? 5}
               onChange={e => setFeelingScore(Number(e.target.value))}
             />
             <button
@@ -168,7 +198,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
           {loading ? (
             <p>게시글 로딩중...</p>
           ) : filteredLogs.length === 0 ? (
-            <p>조건에 맞는 게시글이 없습니다.</p>
+            <div className="empty-message">조건에 맞는 게시글이 없습니다.</div>
           ) : (
             filteredLogs.map(log => (
               <div
@@ -196,7 +226,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
                   <button
                     className="mainpage__delete-btn"
                     onClick={(e) => {
-                      e.stopPropagation(); // 삭제 버튼 클릭 시 상세 페이지 이동 방지
+                      e.stopPropagation();
                       handleDelete(log.id);
                     }}
                   >
