@@ -11,7 +11,7 @@ interface Props {
   selectedPlace: PlaceInfo | null;
   onSelectPlace: (place: PlaceInfo) => void;
   keyword: string;
-  onSearchDone: () => void; // 검색 후 처리 콜백 (optional)
+  onSearchDone: () => void;
 }
 
 declare global {
@@ -20,81 +20,80 @@ declare global {
   }
 }
 
-export default function KakaoMapSearch({ selectedPlace, onSelectPlace, keyword, onSearchDone }: Props) {
+export default function KakaoMapSearch({
+  selectedPlace,
+  onSelectPlace,
+  keyword,
+  onSearchDone,
+}: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markersRef = useRef<any[]>([]);
+  const mapInstance = useRef<any>(null);
+  const markerRef = useRef<any>(null);
 
+  // 🌐 최초 한 번만 지도 생성
   useEffect(() => {
-    if (!window.kakao?.maps) return;
-    if (!mapRef.current) return;
-
-    const mapContainer = mapRef.current;
-    const mapOption = {
-      center: selectedPlace
-        ? new window.kakao.maps.LatLng(selectedPlace.lat, selectedPlace.lng)
-        : new window.kakao.maps.LatLng(37.5665, 126.978), // 서울 기본 좌표
-      level: 3,
-    };
-
-    const map = new window.kakao.maps.Map(mapContainer, mapOption);
-
-    // 기존 마커 제거 함수
-    const clearMarkers = () => {
-      markersRef.current.forEach((marker) => marker.setMap(null));
-      markersRef.current = [];
-    };
-
-    // 장소 선택 시 마커 표시
-    if (selectedPlace) {
-      clearMarkers();
-      const marker = new window.kakao.maps.Marker({
-        map,
-        position: new window.kakao.maps.LatLng(selectedPlace.lat, selectedPlace.lng),
-      });
-      markersRef.current.push(marker);
-      map.setCenter(marker.getPosition());
-    }
-
-    // 키워드가 있으면 검색
-    if (keyword.trim()) {
-      const ps = new window.kakao.maps.services.Places();
-
-      ps.keywordSearch(keyword, function (data: any[], status: string) {
-        if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
-          clearMarkers();
-
-          // 첫 번째 결과만 선택
-          const place = data[0];
-          const coords = new window.kakao.maps.LatLng(place.y, place.x);
-
-          const marker = new window.kakao.maps.Marker({
-            map,
-            position: coords,
-          });
-          markersRef.current.push(marker);
-          map.setCenter(coords);
-
-          onSelectPlace({
-            name: place.place_name,
-            address: place.address_name,
-            lat: parseFloat(place.y),
-            lng: parseFloat(place.x),
-          });
-
-          if (onSearchDone) onSearchDone();
-        }
+    if (window.kakao?.maps && mapRef.current && !mapInstance.current) {
+      mapInstance.current = new window.kakao.maps.Map(mapRef.current, {
+        center: new window.kakao.maps.LatLng(37.5665, 126.978),
+        level: 3,
       });
     }
+  }, []);
 
-    return () => {
-      clearMarkers();
-    };
-  }, [keyword, selectedPlace, onSelectPlace, onSearchDone]);
+  // 📍 selectedPlace 바뀌면 마커/중심 이동
+  useEffect(() => {
+    if (!mapInstance.current || !selectedPlace) return;
+    const kakao = window.kakao;
+
+    const coords = new kakao.maps.LatLng(selectedPlace.lat, selectedPlace.lng);
+    mapInstance.current.setCenter(coords);
+
+    if (markerRef.current) {
+      markerRef.current.setMap(null);
+    }
+
+    const marker = new kakao.maps.Marker({
+      map: mapInstance.current,
+      position: coords,
+      title: selectedPlace.name,
+    });
+
+    markerRef.current = marker;
+  }, [selectedPlace]);
+
+  // 🔍 키워드 검색
+  useEffect(() => {
+    if (!window.kakao?.maps || !keyword.trim() || !mapInstance.current) return;
+
+    const ps = new window.kakao.maps.services.Places();
+    ps.keywordSearch(keyword, (data: any[], status: string) => {
+      if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
+        const place = data[0];
+
+        const lat = parseFloat(place.y);
+        const lng = parseFloat(place.x);
+
+        onSelectPlace({
+          name: place.place_name,
+          address: place.address_name,
+          lat,
+          lng,
+        });
+
+        onSearchDone?.();
+      }
+    });
+  }, [keyword]);
 
   return (
     <div
       ref={mapRef}
-      style={{ width: '100%', height: '400px', borderRadius: '10px', border: '1px solid #ddd' }}
+      style={{
+        width: '100%',
+        height: '400px',
+        borderRadius: '10px',
+        border: '1px solid #ddd',
+      }}
     />
   );
 }

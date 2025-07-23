@@ -1,115 +1,141 @@
 .edit-withlog-page {
-  padding-top: 60px; /* 헤더 높이만큼 띄우기 */
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px 30px;
-  box-sizing: border-box;
-
-  min-height: calc(100vh - 60px);
-  overflow-y: auto;
-  background-color: #f9fafb;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-}
-
-.edit-withlog-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  height: 100vh;
 }
 
-.edit-withlog-form label {
+.edit-withlog-page > .container {
+  max-width: 1400px;
+  min-width: 1200px;
+  margin: 10px auto;
+  padding: 40px 50px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  box-sizing: border-box;
+}
+
+
+label {
   display: flex;
   flex-direction: column;
   font-weight: 600;
   font-size: 1rem;
-  color: #333;
+  margin-bottom: 1rem;
 }
 
-.edit-withlog-form input[type="text"],
-.edit-withlog-form input[type="date"],
-.edit-withlog-form input[type="number"],
-.edit-withlog-form textarea {
-  margin-top: 6px;
-  padding: 10px 12px;
+input[type='text'],
+input[type='date'],
+input[type='number'],
+textarea {
+  padding: 8px;
   font-size: 1rem;
+  margin-top: 6px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 8px;
   resize: vertical;
-  min-width: 0;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
 }
 
-.edit-withlog-form input[type="text"]:focus,
-.edit-withlog-form input[type="date"]:focus,
-.edit-withlog-form input[type="number"]:focus,
-.edit-withlog-form textarea:focus {
-  outline: none;
-  border-color: #ff6f61;
-  box-shadow: 0 0 6px #ff6f61aa;
+textarea {
+  min-height: 80px;
 }
 
-.edit-withlog-form textarea {
-  min-height: 100px;
-}
-
-.edit-withlog-buttons {
+.media-thumbnails {
   display: flex;
-  gap: 20px;
-  margin-top: 30px;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
 }
 
-.edit-withlog-buttons button {
-  padding: 12px 28px;
-  font-size: 1.1rem;
-  font-weight: 700;
+.media-thumb {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: default;
+}
+
+.media-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editpage__delete-btn {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
   border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.add-media-btn {
+  width: 120px;
+  height: 90px;
+  border: 2px dashed #aaa;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #666;
+  user-select: none;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.submit-btn {
+  background-color: #ff6f61;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  font-weight: 700;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.edit-withlog-buttons button[type="submit"] {
-  background-color: #ff6f61;
-  color: white;
-}
-
-.edit-withlog-buttons button[type="submit"]:hover {
+.submit-btn:hover {
   background-color: #e65a4f;
 }
 
-.edit-withlog-buttons button[type="button"] {
-  background-color: #ccc;
-  color: #444;
+.cancel-btn {
+  background-color: #999;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.edit-withlog-buttons button[type="button"]:hover {
-  background-color: #aaa;
+.cancel-btn:hover {
+  background-color: #666;
 }
 
-/* KakaoMapSearch 래퍼 스타일 */
-.kakao-map-search-wrapper {
-  margin-top: 25px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  height: 400px;
+.logout-btn {
+  background-color: #555;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-/* 반응형 */
-@media (max-width: 600px) {
-  .edit-withlog-page {
-    padding: 15px 20px;
-  }
-
-  .edit-withlog-buttons {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .edit-withlog-buttons button {
-    width: 100%;
-  }
+.logout-btn:hover {
+  background-color: #333;
 }

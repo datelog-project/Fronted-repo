@@ -194,7 +194,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
                     <p>비용: {log.cost !== null ? `${log.cost.toLocaleString()} 원` : '-'}</p>
                   </div>
                   <button
-                    className="delete-btn"
+                    className="mainpage__delete-btn"
                     onClick={(e) => {
                       e.stopPropagation(); // 삭제 버튼 클릭 시 상세 페이지 이동 방지
                       handleDelete(log.id);

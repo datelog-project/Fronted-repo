@@ -16,22 +16,31 @@ html, body, #root {
   border-radius: 12px;
   overflow: hidden;
   background-color: white;
-  
 
   box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.12),    
-    0 15px 40px rgba(0, 0, 0, 0.10),  
-    inset 0 0 15px rgba(255, 255, 255, 0.3); 
+    0 8px 20px rgba(0, 0, 0, 0.12),
+    0 15px 40px rgba(0, 0, 0, 0.10),
+    inset 0 0 15px rgba(255, 255, 255, 0.3);
+
+  perspective: 1500px; /* 3D 공간 깊이 */
 }
 
 .left-page {
   width: 50%;
-  padding: 0;       
+  padding: 0;
   display: flex;
-  justify-content: center; 
-  align-items: center;    
+  justify-content: center;
+  align-items: center;
   background-color: rgb(241, 229, 254);
+  box-shadow: inset -5px 0 15px -5px rgba(0,0,0,0.2);
+
+  backface-visibility: hidden; /* 3D 효과에서 뒤쪽 숨김 */
+  transform-style: preserve-3d;
+  transform-origin: right center;
+  transition: transform 0.8s ease-in-out;
+  position: relative;
 }
+
 
 .logo-img {
   width: 380px;
@@ -47,8 +56,15 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* 기존 flex-start -> center 변경 */
+  justify-content: center;
   box-sizing: border-box;
+  box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.15);
+
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transition: transform 0.8s ease-in-out;
+  position: relative;
 }
 
 .form-wrapper {
@@ -250,3 +266,8 @@ form button:hover {
 .right-page {
   position: relative; /* 자식의 absolute 기준 */
 }
+
+.book-container.signup .left-page {
+  transform: rotateY(-180deg);
+}
+

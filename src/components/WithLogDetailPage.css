@@ -3,7 +3,6 @@
   box-sizing: border-box;
   background-color: #f8f9fa;
 
-  overflow-y: auto;    /* 전체 페이지 세로 스크롤 가능 */
   display: block;
 }
 
