@@ -34,6 +34,12 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImgSrc, setModalImgSrc] = useState('');
+  
+  // 공유하기 상태 추가
+  const [shareUrl, setShareUrl] = useState<string>('');
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,6 +61,28 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
     setModalImgSrc('');
   };
 
+  // 공유 링크 생성 함수
+  const createShareLink = async () => {
+    if (!withLogId) return;
+    setShareLoading(true);
+    setShareError(null);
+    try {
+      const res = await api.post(`/with-logs/${withLogId}/share`);
+      // 백엔드에서 { message: "...", shareUrl: "http://localhost:8080/share/..." } 형식 반환 가정
+      setShareUrl(res.data.shareUrl || '');
+    } catch (error: any) {
+      setShareError(error.response?.data?.message || '공유 링크 생성에 실패했습니다.');
+    } finally {
+      setShareLoading(false);
+    }
+  };
+
+  const copyToClipboard = () => {
+    if (!shareUrl) return;
+    navigator.clipboard.writeText(shareUrl);
+    alert('공유 링크가 복사되었습니다!');
+  };
+
   if (loading) return <div className="loading">로딩 중...</div>;
   if (!log) return <div className="error">게시글을 찾을 수 없습니다.</div>;
 
@@ -73,13 +101,22 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
           <strong>제목:</strong> {log.placeName || '(제목 없음)'} ({log.placeAddress})
         </p>
         <p className="text">
-          <strong>비용:</strong> {log.cost?.toLocaleString()} 원
+          <strong>데이트 비용:</strong> {log.cost?.toLocaleString()} 원
         </p>
         <p className="text">
-          <strong>기분 점수:</strong> {log.feelingScore}
+          <div className="score-bar-wrapper"> 
+            <strong>만족도 :</strong>
+            <div className="score-bar-bg">
+              <div
+                className="score-bar-fill"
+                style={{ width: `${(log.feelingScore / 10) * 100}%` }}
+              ></div>
+            </div>
+            <span className="score-label">{log.feelingScore}점</span>
+          </div>
         </p>
         <p className="text memo">
-          <strong>메모:</strong> {log.note}
+          <strong>내용:</strong> {log.note}
         </p>
 
         {/* 미디어 한 장씩 세로로, 클릭 시 확대 */}
@@ -116,14 +153,45 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
           </div>
         )}
 
-        <div className="buttons">
-          <button onClick={() => navigate(`/with-logs/${withLogId}/edit`)} className="button">
-            수정하기
-          </button>
-          <button onClick={handleLogout} className="button logout">
-            로그아웃
-          </button>
+        {/* 공유하기 섹션 */}
+        <div className="share-section">
+          {shareUrl ? (
+            <>
+              <p>공유 링크가 생성되었습니다:</p>
+              <input
+                type="text"
+                readOnly
+                value={shareUrl}
+                className="share-link-input"
+                onClick={() => navigator.clipboard.writeText(shareUrl)}
+                title="클릭하여 복사"
+              />
+              <button onClick={copyToClipboard} className="button">
+                복사하기
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={createShareLink}
+                disabled={shareLoading}
+                className="button"
+              >
+                {shareLoading ? '생성 중...' : '공유 링크 생성'}
+              </button>
+              {shareError && <p className="error-message">{shareError}</p>}
+            </>
+          )}
         </div>
+
+        <div className="buttons">
+        <button onClick={() => navigate(`/with-logs/${withLogId}/edit`)} className="button">
+          수정하기
+        </button>
+        <button onClick={() => navigate('/')} className="button">
+          메인페이지로 가기
+        </button>
+</div>
       </div>
 
       {/* 이미지 확대 모달 */}
@@ -138,4 +206,3 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
     </div>
   );
 }
-

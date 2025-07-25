@@ -1,3 +1,4 @@
+/* 전체 페이지 및 기본 스타일 */
 .main-page.create-post-wrapper {
   max-width: 1400px;
   width: 100%;
@@ -9,6 +10,7 @@
   background-color: #f8f9fa;
 }
 
+/* 헤더바 */
 .header-bar {
   position: sticky;
   top: 0;
@@ -20,6 +22,7 @@
   font-size: 1.5rem;
 }
 
+/* 글 작성 컨테이너 */
 .create-post-container {
   max-width: 1400px;
   width: 100%;
@@ -27,16 +30,16 @@
   margin: 10px auto;
   padding: 30px 40px;
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
 }
 
 .create-post-container > h2 {
   font-weight: 700;
-  font-size: 2rem;
-  margin-bottom: 30px;
+  font-size: 2.2rem;
+  margin-bottom: 24px;
   text-align: center;
-  color: #222;
+  color: #000000;
 }
 
 .create-post-container label {
@@ -44,7 +47,7 @@
   margin-top: 20px;
   font-weight: 600;
   font-size: 1rem;
-  color: #444;
+  color: #333;
 }
 
 .create-post-container input[type="text"],
@@ -67,6 +70,8 @@
 .create-post-container input[type="number"]:focus,
 .create-post-container textarea:focus {
   outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 0 2px rgba(255, 111, 97, 0.2);
 }
 
 .create-post-container textarea {
@@ -76,27 +81,20 @@
 
 .selected-place {
   margin-top: 12px;
-  background-color: #e7f0ff;
+  background-color: #fff3f3;
   padding: 12px 18px;
   border-radius: 8px;
-  color: #222;
+  border: 1px dashed #ffb3b3;
+  color: #d14444;
   font-size: 14px;
   font-weight: 500;
 }
 
-.media-list {
-  margin-top: 15px;
-  padding-left: 20px;
-  list-style: disc;
-  color: #555;
-  font-size: 14px;
-  user-select: text;
-}
-
-.create-post-container button {
+/* 버튼 스타일 */
+.create-post-container button:not(.delete-btn) {
   padding: 16px 25px;
-  width: 100%;
-  background-color: #0078ff;
+  width: auto;
+  background-color: #4a90e2;
   border: none;
   border-radius: 8px;
   color: white;
@@ -105,10 +103,11 @@
   cursor: pointer;
   transition: background-color 0.25s ease-in-out;
   user-select: none;
+  margin-top: 20px;
 }
 
 .create-post-container button:hover:not(:disabled) {
-  background-color: #005ecb;
+  background-color: #8b8b8b;
 }
 
 .create-post-container button:disabled {
@@ -116,13 +115,14 @@
   cursor: not-allowed;
 }
 
+/* 지도 컨테이너 */
 .map-wrapper {
   width: 100%;
   height: 400px;
   margin: 10px 0;
 }
 
-/* KakaoMapSearch.css */
+/* KakaoMapSearch 관련 */
 .map-container {
   width: 100%;
   height: 100%;
@@ -145,7 +145,7 @@
   outline: none;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
-  height: 48px; /* 명시적 높이 지정 */
+  height: 48px;
 }
 
 .search-bar button {
@@ -159,7 +159,7 @@
   box-shadow: 0 4px 6px rgba(255, 111, 97, 0.4);
   transition: background-color 0.3s ease;
   box-sizing: border-box;
-  line-height: 1; /* 버튼 내부 텍스트 정렬 */
+  line-height: 1;
 }
 
 .search-bar button:disabled {
@@ -172,8 +172,6 @@
   background-color: #e65a4f;
 }
 
-
-
 .map-box {
   flex-grow: 1;
   height: 100%;
@@ -182,26 +180,74 @@
   box-sizing: border-box;
 }
 
-
-.create-post-container label {
-  margin-top: 24px;
-  font-weight: 600;
-  color: #333;
+/* 미디어 썸네일 & 첨부 버튼 컨테이너 */
+.media-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center; /* 수평 정렬 맞춤 */
 }
 
-.create-post-container input[type="range"] {
-  width: 100%;
-  margin-top: 8px;
+/* 개별 미디어 썸네일 & 추가 버튼 스타일 */
+.media-thumb,
+.add-media-btn {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-.media-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+.media-thumb img,
+.media-thumb video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
+.add-media-btn:hover {
+  border-color: #ff6f61;
+  color: #ff6f61;
+}
+
+/* 미디어 썸네일 내 삭제 버튼 */
+.delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+
+  display: flex;            /* flexbox 사용 */
+  align-items: center;      /* 수직 중앙 정렬 */
+  justify-content: center;  /* 수평 중앙 정렬 */
+}
+
+
+.delete-btn:hover {
+  background-color: #e53935;
+}
+
+/* 미디어 카드 (필요 시 참고) */
 .media-card {
+  position: relative;
   background: #fafafa;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -218,34 +264,14 @@
   border-radius: 6px;
 }
 
-/* 추가 감성 스타일 */
-.create-post-container > h2 {
-  font-size: 2.2rem;
-  color: #ff6f61;
-  margin-bottom: 24px;
+/* 업로드 중 텍스트 */
+.uploading-text {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #888;
 }
 
-.create-post-container button {
-  background-color: #ff6f61;
-}
-
-.create-post-container button:hover:not(:disabled) {
-  background-color: #e65a4f;
-}
-
-.selected-place {
-  background-color: #fff3f3;
-  border: 1px dashed #ffb3b3;
-  color: #d14444;
-}
-
-input:focus,
-textarea:focus {
-  border-color: #ff6f61;
-  box-shadow: 0 0 0 2px rgba(255, 111, 97, 0.2);
-}
-
-/* 파일 업로드 커스텀 스타일 */
+/* 파일 업로드 버튼 */
 .file-upload-wrapper {
   margin-top: 12px;
 }
@@ -267,11 +293,3 @@ textarea:focus {
 .file-upload-button:hover {
   background-color: #ff6f61;
 }
-
-.uploading-text {
-  margin-top: 6px;
-  font-size: 0.85rem;
-  color: #888;
-}
-
-/* 위에 있던 media-preview-grid와 media-card도 유지 */

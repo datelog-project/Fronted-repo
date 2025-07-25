@@ -26,7 +26,7 @@ interface WithLogPreviewResponse {
   feelingScore: number | null;
 }
 
-const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
+const MainPage: React.FC<MainPageProps> = ({ userInfo, setUserInfo, handleLogout }) => {
   const { partnerName, userName, userConnectionId } = userInfo;
   const [withLogs, setWithLogs] = useState<WithLogPreviewResponse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,6 +56,25 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
     } catch (error) {
       console.error(error);
       alert('게시글 삭제에 실패했습니다.');
+    }
+  };
+
+  const handleEndConnection = async () => {
+    if (!userConnectionId) return;
+    const confirm = window.confirm("정말 연결을 종료하시겠습니까?");
+    if (!confirm) return;
+
+    try {
+      const res = await api.post(`/connections/${userConnectionId}/end`);
+      alert(res.data.message || "연결이 종료되었습니다.");
+
+      // 최신 유저 상태 다시 받아서 세팅
+      const userRes = await api.get('/auth/me');
+      setUserInfo(userRes.data);
+
+      navigate('/invite');
+    } catch (error: any) {
+      alert(error?.response?.data?.message || "연결 끊기에 실패했습니다.");
     }
   };
 
@@ -136,6 +155,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
         userName={userName}
         partnerName={partnerName}
         handleLogout={handleLogout}
+        handleEndConnection={handleEndConnection}
         showSearch={true}
         searchText={searchText}
         onSearchChange={e => setSearchText(e.target.value)}
@@ -146,7 +166,7 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
           <h3>필터</h3>
 
           <label>
-            월별
+            <div style={{marginBottom: '10px'}}>월별</div>
             <input
               type="month"
               value={selectedMonth}
@@ -156,14 +176,15 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
 
           <div style={{ marginBottom: '20px', fontWeight: '600', color: '#4a90e2' }}>
             {selectedMonth ? (
-              <>총 데이트 비용: {totalCostForMonth.toLocaleString()} 원</>
+              <><div>{selectedMonth}월 데이트 비용</div>
+              <div style={{ marginBottom: '20px', fontWeight: '600', color: '#4a90e2', fontSize: '1.3rem', marginTop: '10px'}}>{totalCostForMonth.toLocaleString()} 원</div></>
             ) : (
               <>월을 선택하면 총 데이트 비용이 표시됩니다.</>
             )}
           </div>
 
           <label>
-            기분 점수: {feelingScore ?? '선택 안함'}
+            만족도 : {feelingScore ?? '선택 안함'}
             <input
               type="range"
               min={1}
@@ -220,8 +241,8 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, handleLogout }) => {
                     <h2>{log.placeName}</h2>
                     <p>{log.date}</p>
                     <p>{log.previewNote}</p>
-                    <p>기분 점수: {log.feelingScore ?? '-'}</p>
-                    <p>비용: {log.cost !== null ? `${log.cost.toLocaleString()} 원` : '-'}</p>
+                    <p>만족도 : {log.feelingScore ?? '-'}</p>
+                    <p>데이트 비용: {log.cost !== null ? `${log.cost.toLocaleString()} 원` : '-'}</p>
                   </div>
                   <button
                     className="mainpage__delete-btn"

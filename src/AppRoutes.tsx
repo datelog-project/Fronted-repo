@@ -6,6 +6,7 @@ import MainPage from './components/MainPage';
 import CreatePostPage from './components/CreatePostPage';
 import WithLogDetailPage from './components/WithLogDetailPage';
 import EditWithLogPage from './components/EditWithLogPage';
+import SharedPage from './components/SharedPage';
 
 
 import type { UserInfoResponse } from './App';
@@ -100,6 +101,10 @@ export default function AppRoutes({ userInfo, isSignin, isLoading, setUserInfo, 
         ) : (
           <Navigate to="/signin" replace />
         ),
+    },
+    {
+      path: '/share/:sharedLinkId',
+      element: <SharedPage />,
     },
     {
       path: '*',

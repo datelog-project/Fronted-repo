@@ -35,19 +35,20 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
     if (!withLogId) return;
     api.get(`/with-logs/${withLogId}/details`).then((res) => {
       const data = res.data;
+      console.log('detail data:', data);
 
       setFormData({
         date: data.date,
         feelingScore: data.feelingScore,
         note: data.note,
-        placeName: data.placeName,
+        placeName : data.placeName,
         placeAddress: data.placeAddress,
         placeLat: data.placeLat,
         placeLng: data.placeLng,
         cost: data.cost ?? 0,
       });
 
-      setKeyword(data.placeName || '');
+      setKeyword('');
 
       // mediaList -> mediaUrls 형태로 변환
       const fixedUrls = (data.mediaList || []).map((media: { mediaUrl: string }) => {
@@ -65,7 +66,6 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
     if (keyword.trim() === '') {
       setFormData((prev) => ({
         ...prev,
-        placeName: '',
         placeAddress: '',
         placeLat: null,
         placeLng: null,
@@ -77,12 +77,10 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
     (place: { name: string; address: string; lat: number; lng: number }) => {
       setFormData((prev) => ({
         ...prev,
-        placeName: place.name,
         placeAddress: place.address,
         placeLat: place.lat,
         placeLng: place.lng,
       }));
-      // setKeyword(place.name); // 불필요한 재검색 방지 위해 주석
     },
     []
   );
@@ -123,10 +121,9 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
       placeAddress: formData.placeAddress,
       placeLat: formData.placeLat,
       placeLng: formData.placeLng,
-      // 기존 이미지들(mediaList) 서버가 요구하는 형태에 맞게 변환
       mediaList: existingImages.map((url) => ({
         mediaUrl: url,
-        mediaType: "IMAGE", // 필요시 실제 타입 맞게 조정
+        mediaType: "IMAGE",
       })),
     };
 
@@ -178,20 +175,20 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
           </label>
 
           <label>
-            기분 점수:
+            기분 점수: {formData.feelingScore}점
             <input
-              type="number"
+              type="range"
               name="feelingScore"
-              value={formData.feelingScore}
-              onChange={handleChange}
               min={1}
               max={10}
+              value={formData.feelingScore}
+              onChange={handleChange}
               required
             />
           </label>
 
           <label>
-            메모:
+            내용:
             <textarea name="note" value={formData.note} onChange={handleChange} />
           </label>
 
@@ -207,6 +204,11 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="장소를 검색하세요"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                e.preventDefault();
+                }
+              }}
             />
           </label>
 
@@ -265,9 +267,6 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
             </button>
             <button type="button" className="cancel-btn" onClick={() => navigate(-1)}>
               취소
-            </button>
-            <button type="button" className="logout-btn" onClick={handleLogout}>
-              로그아웃
             </button>
           </div>
         </form>

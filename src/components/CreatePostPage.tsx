@@ -162,9 +162,6 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
               }
             }}
           />
-          <button onClick={handleSearchClick} disabled={!searchKeyword.trim()}>
-            검색
-          </button>
         </div>
 
         <div className="map-wrapper">
@@ -184,7 +181,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
           </div>
         )}
 
-        <label htmlFor="cost-input">비용 (숫자만 입력)</label>
+        <label htmlFor="cost-input">데이트 비용 (숫자만 입력)</label>
         <input
           id="cost-input"
           type="number"
@@ -195,7 +192,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
           placeholder="예: 10000"
         />
 
-        <label htmlFor="feeling-input">기분 점수 ({feelingScore}점)</label>
+        <label htmlFor="feeling-input">만족도 ({feelingScore}점)</label>
         <input
           id="feeling-input"
           type="range"
@@ -214,30 +211,19 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
         />
 
         <label>미디어 첨부 (이미지/영상)</label>
-        <div className="file-upload-wrapper">
-          <label htmlFor="media-file-input" className="file-upload-button">
-            📎 파일 선택하기
-          </label>
-          <input
-            id="media-file-input"
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            onChange={handleFileChange}
-            disabled={uploading}
-            style={{ display: 'none' }}
-          />
-          {uploading && <p className="uploading-text">업로드 중...</p>}
-        </div>
-
-        {mediaList.length > 0 && (
-          <div className="media-preview-grid">
+        <div className="new-media-list">
+          <div className="media-thumbnails">
             {mediaList.map((m, idx) => {
               const fullUrl = m.mediaUrl.startsWith('http') ? m.mediaUrl : BASE_URL + m.mediaUrl;
               const encodedUrl = encodeURI(fullUrl);
               return (
-                <div key={idx} className="media-card">
-                  <button className="remove-media-button" onClick={() => handleRemoveMedia(idx)}>
+                <div key={idx} className="media-thumb">
+                  <button
+                    type="button"
+                    className="delete-btn"
+                    onClick={() => handleRemoveMedia(idx)}
+                    aria-label="미디어 삭제"
+                  >
                     ×
                   </button>
                   {m.mediaType === 'IMAGE' ? (
@@ -248,12 +234,37 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
                 </div>
               );
             })}
+            <label className="add-media-btn" tabIndex={0} aria-label="미디어 추가">
+              +
+              <input
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+                disabled={uploading}
+              />
+            </label>
           </div>
-        )}
+          {uploading && <p className="uploading-text">업로드 중...</p>}
+        </div>
 
-        <button onClick={handleSubmit} disabled={loading || uploading}>
-          {loading ? '등록 중...' : '게시글 등록하기'}
-        </button>
+        <div className="form-buttons">
+          <button
+            onClick={handleSubmit}
+            disabled={loading || uploading}
+            className="submit-btn"
+          >
+            {loading ? '등록 중...' : '게시글 등록하기'}
+          </button>
+          <button
+            onClick={() => navigate('/main')}
+            className="cancel-btn"
+            type="button"
+          >
+            등록 취소하기
+          </button>
+        </div>
       </div>
     </div>
   );

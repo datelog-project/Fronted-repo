@@ -1,0 +1,15 @@
+.share-link-container {
+  margin-top: 1rem;
+}
+
+.share-link-input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  color: red;
+  margin-top: 0.5rem;
+}

@@ -36,17 +36,29 @@ const InvitePage: React.FC<InvitePageProps> = ({ userInfo ,setUserInfo, handleLo
     }
 
     try {
-      await api.post('/connections/invite', { partnerEmail: inviteEmail });
+      // 1) 재연결 가능한지 체크
+      const checkRes = await api.get('/connections/check', {
+        params: { partnerEmail: inviteEmail }
+      });
 
-      alert(`${inviteEmail}님에게 초대장을 전송했습니다!`);
+      if (checkRes.data.exists) {
+        // 2) 재연결 API 호출
+        await api.post('/connections/reconnect', { partnerEmail: inviteEmail });
+        alert(`${inviteEmail}님과 재연결 요청을 보냈습니다!`);
+      } else {
+        // 3) 새 초대 API 호출
+        await api.post('/connections/invite', { partnerEmail: inviteEmail });
+        alert(`${inviteEmail}님에게 초대장을 전송했습니다!`);
+      }
+
       setInviteEmail('');
       const res = await api.get('/auth/me');
       setUserInfo(res.data);
-    } catch (error:any) {
+    } catch (error: any) {
       const errMsg =
-      error.response?.data?.error ||
-      error.message ||
-      '알 수 없는 서버 오류';
+        error.response?.data?.error ||
+        error.message ||
+        '알 수 없는 서버 오류';
       alert(errMsg);
     }
   };
