@@ -174,15 +174,6 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, setUserInfo, handleLogout
             />
           </label>
 
-          <div style={{ marginBottom: '20px', fontWeight: '600', color: '#4a90e2' }}>
-            {selectedMonth ? (
-              <><div>{selectedMonth}월 데이트 비용</div>
-              <div style={{ marginBottom: '20px', fontWeight: '600', color: '#4a90e2', fontSize: '1.3rem', marginTop: '10px'}}>{totalCostForMonth.toLocaleString()} 원</div></>
-            ) : (
-              <>월을 선택하면 총 데이트 비용이 표시됩니다.</>
-            )}
-          </div>
-
           <label>
             만족도 : {feelingScore ?? '선택 안함'}
             <input
@@ -200,7 +191,17 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, setUserInfo, handleLogout
               초기화
             </button>
           </label>
+
+          <div className="filter-dateCost-month">
+            {selectedMonth ? (
+              <><div>{selectedMonth}월 데이트 비용</div>
+              <div className='filter-dateCost'>{totalCostForMonth.toLocaleString()} 원</div></>
+            ) : (
+              <>월을 선택하면 총 데이트 비용이 표시됩니다.</>
+            )}
+          </div>
         </aside>
+        
 
         <section className="content-area">
           <button
@@ -241,7 +242,20 @@ const MainPage: React.FC<MainPageProps> = ({ userInfo, setUserInfo, handleLogout
                     <h2>{log.placeName}</h2>
                     <p>{log.date}</p>
                     <p>{log.previewNote}</p>
-                    <p>만족도 : {log.feelingScore ?? '-'}</p>
+                    <div className="score-bar-wrapper">
+                    <strong>만족도 :</strong>
+                    <div className="score-bar-bg">
+                      <div
+                        className="score-bar-fill"
+                        style={{ width: `${(log.feelingScore ?? 0) * 10}%` }}
+                      ></div>
+                    </div>
+                    <span className="score-label">
+                      {log.feelingScore !== null && log.feelingScore !== undefined
+                        ? `${log.feelingScore}점`
+                        : '-'}
+                    </span>
+                  </div>
                     <p>데이트 비용: {log.cost !== null ? `${log.cost.toLocaleString()} 원` : '-'}</p>
                   </div>
                   <button

@@ -175,7 +175,7 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
           </label>
 
           <label>
-            기분 점수: {formData.feelingScore}점
+            만족도 : {formData.feelingScore}점
             <input
               type="range"
               name="feelingScore"
@@ -232,9 +232,9 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                     }}
-                    style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'cover' }}
+                    style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
                   />
-                  <button type="button" className="editpage__delete-btn" onClick={() => handleExistingImageDelete(url)}>
+                  <button type="button" className="delete-btn" onClick={() => handleExistingImageDelete(url)}>
                     ×
                   </button>
                 </div>
@@ -262,7 +262,7 @@ export default function EditWithLogPage({ userInfo, handleLogout }: EditWithLogP
           </div>
 
           <div className="form-buttons">
-            <button type="submit" className="submit-btn">
+            <button type="submit" className="button">
               수정 완료
             </button>
             <button type="button" className="cancel-btn" onClick={() => navigate(-1)}>

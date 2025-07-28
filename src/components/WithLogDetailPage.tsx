@@ -96,14 +96,14 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
       />
 
       <div className="container">
-        <h2 className="title">{log.date}</h2>
+        <h2 className="title"><strong></strong> {log.placeName || '(제목 없음)'}</h2>
         <p className="text">
-          <strong>제목:</strong> {log.placeName || '(제목 없음)'} ({log.placeAddress})
+          <strong>날짜 : </strong>{log.date}
         </p>
         <p className="text">
-          <strong>데이트 비용:</strong> {log.cost?.toLocaleString()} 원
+          <strong>데이트 비용 :</strong> {log.cost?.toLocaleString()} 원
         </p>
-        <p className="text">
+        <div className="text">
           <div className="score-bar-wrapper"> 
             <strong>만족도 :</strong>
             <div className="score-bar-bg">
@@ -114,10 +114,17 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
             </div>
             <span className="score-label">{log.feelingScore}점</span>
           </div>
-        </p>
+        </div>
         <p className="text memo">
-          <strong>내용:</strong> {log.note}
+         {log.note}
         </p>
+
+        {/* 지도 */}
+        {log.placeLat && log.placeLng && (
+          <div className="map-wrapper">
+            <KakaoMap lat={log.placeLat} lng={log.placeLng} />
+          </div>
+        )}
 
         {/* 미디어 한 장씩 세로로, 클릭 시 확대 */}
         {log.mediaList && log.mediaList.length > 0 && (
@@ -146,12 +153,6 @@ export default function WithLogDetailPage({ userInfo, handleLogout }: WithLogDet
           </div>
         )}
 
-        {/* 지도 */}
-        {log.placeLat && log.placeLng && (
-          <div className="map-wrapper">
-            <KakaoMap lat={log.placeLat} lng={log.placeLng} />
-          </div>
-        )}
 
         {/* 공유하기 섹션 */}
         <div className="share-section">

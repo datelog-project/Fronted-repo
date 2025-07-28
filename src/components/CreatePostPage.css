@@ -3,35 +3,26 @@
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
+  min-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #fff;
+}
+.header-bar {
+  padding-left: 100px;
 }
 
-/* 헤더바 */
-.header-bar {
-  position: sticky;
-  top: 0;
-  background: white;
-  padding: 12px 24px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  z-index: 100;
-  font-weight: 700;
-  font-size: 1.5rem;
-}
 
 /* 글 작성 컨테이너 */
 .create-post-container {
   max-width: 1400px;
   width: 100%;
-  background-color: #fff;
-  margin: 10px auto;
   padding: 30px 40px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  margin-top: 10px;
   box-sizing: border-box;
+  background-color: #fff;
 }
 
 .create-post-container > h2 {
@@ -45,6 +36,7 @@
 .create-post-container label {
   display: block;
   margin-top: 20px;
+  margin-bottom: 5px;
   font-weight: 600;
   font-size: 1rem;
   color: #333;
@@ -56,7 +48,6 @@
 .create-post-container textarea {
   width: 100%;
   padding: 12px 15px;
-  margin-top: 8px;
   border: 1.5px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
@@ -64,6 +55,17 @@
   transition: border-color 0.2s ease;
   box-sizing: border-box;
 }
+
+.create-post-container input[type="range"] {
+  width: 100%;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
 
 .create-post-container input[type="text"]:focus,
 .create-post-container input[type="date"]:focus,
@@ -90,30 +92,6 @@
   font-weight: 500;
 }
 
-/* 버튼 스타일 */
-.create-post-container button:not(.delete-btn) {
-  padding: 16px 25px;
-  width: auto;
-  background-color: #4a90e2;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.25s ease-in-out;
-  user-select: none;
-  margin-top: 20px;
-}
-
-.create-post-container button:hover:not(:disabled) {
-  background-color: #8b8b8b;
-}
-
-.create-post-container button:disabled {
-  background-color: #999;
-  cursor: not-allowed;
-}
 
 /* 지도 컨테이너 */
 .map-wrapper {
@@ -148,44 +126,19 @@
   height: 48px;
 }
 
-.search-bar button {
-  background-color: #ff6f61;
-  color: white;
-  font-weight: 700;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(255, 111, 97, 0.4);
-  transition: background-color 0.3s ease;
-  box-sizing: border-box;
-  line-height: 1;
-}
-
-.search-bar button:disabled {
-  background-color: #f0a9a0;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.search-bar button:not(:disabled):hover {
-  background-color: #e65a4f;
-}
-
 .map-box {
   flex-grow: 1;
   height: 100%;
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solidlabel #ddd;
   box-sizing: border-box;
 }
 
 /* 미디어 썸네일 & 첨부 버튼 컨테이너 */
 .media-thumbnails {
-  display: flex;
-  flex-wrap: wrap;
+  display:flex;
+  flex-wrap:wrap;
   gap: 8px;
-  align-items: center; /* 수평 정렬 맞춤 */
 }
 
 /* 개별 미디어 썸네일 & 추가 버튼 스타일 */
@@ -197,10 +150,9 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
+  margin-top: 20px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  position: relative;
   background-color: white;
   cursor: pointer;
   user-select: none;
@@ -293,3 +245,4 @@
 .file-upload-button:hover {
   background-color: #ff6f61;
 }
+

@@ -9,10 +9,11 @@
   max-width: 1200px;
   min-width: 1200px;
   width: 100%;
-  margin: 10px auto;
+  margin:  auto;
+  margin-left: -20px;
+  margin-right: -20px;
   padding: 40px 50px;
   background: #ffffff;
-  border-radius: 14px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   height: auto;
@@ -37,10 +38,12 @@
 
 .memo {
   white-space: pre-wrap;
-  padding: 14px 18px;
+  padding: 20px 20px;
   border-radius: 10px;
-  border: 1px solid #000000;
-  font-style: italic;
+  border: 1px solid #c7c7c7;
+  font-style:unset;
+  font-size:larger;
+  font-weight: 500;
 }
 
 .media-list-vertical {
@@ -85,6 +88,7 @@
 
 .map-wrapper {
   width: 100%;
+  height: auto;
   margin-top: 35px;
   border-radius: 12px;
   overflow: hidden;
@@ -92,7 +96,6 @@
 }
 
 .share-section {
-  margin-top: 40px;
   text-align: center;
 }
 
@@ -128,21 +131,27 @@
   margin-top: 40px;
 }
 
+.header-bar {
+  padding-left: 100px;
+}
+
 .button {
   padding: 14px 30px;
-  background-color: #4a90e2;
-  border: none;
-  border-radius: 10px;
-  color: white;
+  color: rgb(0, 0, 0);
   font-weight: 700;
   font-size: 1.1rem;
-  cursor: pointer;
   user-select: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .button:hover {
-  background-color: #357ab8;
+  background-color: #cccccc;
   transform: translateY(-1px);
 }
 
@@ -181,17 +190,18 @@
   max-height: 90vh;
   background: white;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: auto;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .modal-content img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 90vh;
   object-fit: contain;
+  display: inline-block;
 }
 
 .modal-close-btn {

@@ -49,8 +49,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       </div>
 
       <Link to="/main" className="title-link">
-        {userName} & {partnerName ?? '...'} 의 WithLog
+        {userName} & {partnerName ?? '...'}의 WithLog
       </Link>
+
 
       <div className="user-dropdown" ref={dropdownRef}>
         <button className="user-button" onClick={() => setDropdownOpen(prev => !prev)}>

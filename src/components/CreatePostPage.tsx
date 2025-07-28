@@ -198,6 +198,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
           type="range"
           min={1}
           max={10}
+          step={1}
           value={feelingScore}
           onChange={(e) => setFeelingScore(Number(e.target.value))}
         />
@@ -211,7 +212,6 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
         />
 
         <label>미디어 첨부 (이미지/영상)</label>
-        <div className="new-media-list">
           <div className="media-thumbnails">
             {mediaList.map((m, idx) => {
               const fullUrl = m.mediaUrl.startsWith('http') ? m.mediaUrl : BASE_URL + m.mediaUrl;
@@ -247,19 +247,18 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
             </label>
           </div>
           {uploading && <p className="uploading-text">업로드 중...</p>}
-        </div>
 
-        <div className="form-buttons">
+        <div className="buttons">
           <button
             onClick={handleSubmit}
             disabled={loading || uploading}
-            className="submit-btn"
+            className="button"
           >
             {loading ? '등록 중...' : '게시글 등록하기'}
           </button>
           <button
             onClick={() => navigate('/main')}
-            className="cancel-btn"
+            className="button"
             type="button"
           >
             등록 취소하기
